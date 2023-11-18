@@ -7,6 +7,3 @@ from os import getenv
 # Can be LOCAL and PRODUCTION
 storage_type = getenv("PLATFORM")
 
-storage = DBStorage()
-
-storage.reload()
