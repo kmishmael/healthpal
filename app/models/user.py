@@ -20,7 +20,7 @@ class IsVerified(enum.Enum):
 
 class User(UserMixin, db.Model):
     """user model"""
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String())
     email = db.Column(db.String(120), index=True, unique=True)
     profile_photo = db.Column(db.String())
