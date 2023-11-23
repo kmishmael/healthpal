@@ -6,13 +6,15 @@ import random
 fake = Faker()
 
 with app.app_context():
+    print("creating new databases")
+    db.create_all()
     print('Seeding some initial data')
     User.query.delete()
     new_users = []
     for _ in range(20):
         id = random.randint(1000, 10000)
         name = fake.name()
-        email = db.email()
+        email = fake.email()
         profile_photo = 'https://avatars.githubusercontent.com/u/66499851'
         email_verified = True
         age = random.randint(18, 35)
@@ -24,4 +26,3 @@ with app.app_context():
     db.session.add_all(new_users)
     db.session.commit()
     print('Seeding Successful')
-    

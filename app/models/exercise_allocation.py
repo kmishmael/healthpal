@@ -1,6 +1,5 @@
 """Exercise allocation"""
 
-import models
 from app import db
 
 class ExerciseAllocation(db.Model):

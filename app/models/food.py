@@ -1,6 +1,5 @@
 """food model"""
 
-import models
 from models import db
 
 

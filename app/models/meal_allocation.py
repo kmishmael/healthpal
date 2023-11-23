@@ -1,6 +1,5 @@
 """Meal allocation model"""
 
-import models
 from app import db
 
 

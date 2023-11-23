@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """the user model"""
 
-import models
 from flask_login import UserMixin
 import jwt
 from app import db, login, app
