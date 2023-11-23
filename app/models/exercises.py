@@ -1,6 +1,5 @@
 """Exercises model"""
 
-import models
 from app import db
 
 class Exercises(db.Model):

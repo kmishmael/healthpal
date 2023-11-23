@@ -1,5 +1,5 @@
 """water goal model"""
-import models
+
 from app import db
 
 class WaterGoal(db.Model):

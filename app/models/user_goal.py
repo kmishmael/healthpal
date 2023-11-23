@@ -1,6 +1,5 @@
 """User goal model"""
 
-import models
 import enum
 from app import db
 
