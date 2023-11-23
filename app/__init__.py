@@ -7,6 +7,8 @@ from flask_login import LoginManager
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
+from flask_restful import Api
+from app.api.users import UsersResource
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -15,6 +17,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('MYSQL_URL') or  'sqlite:
 
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.webp', '.jpeg']
 app.config['UPLOAD_PATH'] = 'app/static/images'
+
+# API Resources
+api = Api(app)
+
+api.add_resource(UsersResource, '/users', '/users/<int:user_id>')
 
 # Flask SQLAlchemy
 db = SQLAlchemy(app)

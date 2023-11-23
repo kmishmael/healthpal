@@ -6,8 +6,6 @@ from app import app, db
 
 load_dotenv()
 
-app = Flask(__name__)
-
 @app.route('/')
 def index():
     return "Hello mum"

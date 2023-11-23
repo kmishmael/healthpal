@@ -1,10 +1,11 @@
 """users api"""
 
+from flask import request
 from flask_restful import Resource
-from models.user import User
+from app.models.user import User
 from app import db
 
-class Users(Resource):
+class UsersResource(Resource):
     """users api implementation"""
     def get(self, user_id=None):
         if user_id:
