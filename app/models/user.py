@@ -8,15 +8,25 @@ from app import db, login, app
 import enum
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 class UserRoles(enum.Enum):
     """User roles enum definition"""
     user = 'USER'
     admin = 'ADMIN'
 
+
+class GenderOptions(enum.Enum):
+    """gender options enum definition"""
+    male = 'MALE'
+    female = 'FEMALE'
+    other = 'OTHER'
+
+
 class IsVerified(enum.Enum):
     """is a user verified?"""
     true = True
     false = False
+
 
 class User(UserMixin, db.Model):
     """user model"""
@@ -26,6 +36,11 @@ class User(UserMixin, db.Model):
     profile_photo = db.Column(db.String())
     email_verified = db.Column(db.Enum(UserRoles), default=IsVerified.false)
     role = db.Column(db.Enum(UserRoles), default=UserRoles.user)
+    age = db.Column(db.Integer())
+    height = db.Column(db.Integer())
+    weight = db.Column(db.Integer())
+    gender = db.Column(db.Enum(GenderOptions))
+    target_calories = db.Column(db.Integer())
 
     def __repr__(self):
         """specify how to print the class"""
@@ -47,6 +62,7 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
+
 
 @login.user_loader
 def load_user(id):
