@@ -7,10 +7,12 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
 from flask_restful import Api
-from .api.users import UsersResource
-
 from .instance import app
 
-api = Api(app)
 
-api.add_resource(UsersResource, '/users', '/users/<int:user_id>')
+# Flask SQLAlchemy
+db = SQLAlchemy(app)
+
+# Flask Migrate
+migrate = Migrate(app, db)
+

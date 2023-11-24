@@ -3,7 +3,9 @@
 
 from flask_login import UserMixin
 import jwt
-from app import db, login, app
+from ..login import login
+from ..instance import app
+from ..db import db
 import enum
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -23,8 +25,9 @@ class GenderOptions(enum.Enum):
 
 class IsVerified(enum.Enum):
     """is a user verified?"""
-    true = True
-    false = False
+    true = 'TRUE'
+    false = 'FALSE'
+
 
 
 class User(UserMixin, db.Model):
@@ -33,7 +36,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String())
     email = db.Column(db.String(120), index=True, unique=True)
     profile_photo = db.Column(db.String())
-    email_verified = db.Column(db.Enum(UserRoles), default=IsVerified.false)
+    email_verified = db.Column(db.Enum(IsVerified), default=IsVerified.false)
     role = db.Column(db.Enum(UserRoles), default=UserRoles.user)
     age = db.Column(db.Integer())
     height = db.Column(db.Integer())
@@ -61,6 +64,21 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'profile_photo': self.profile_photo,
+            'email_verified': self.email_verified.value,
+            'role': self.role.value,
+            'age': self.age,
+            'height': self.height,
+            'weight': self.weight,
+            'gender': self.gender,
+            'target_calories': self.target_calories
+        }
 
 
 @login.user_loader

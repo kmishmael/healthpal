@@ -1,17 +1,18 @@
 """users api"""
 
+from flask import request
 from flask_restful import Resource
-from models.user import User
-from app import db
+from app.models.user import User
+from ..db import db
 
-class Users(Resource):
+class UsersResource(Resource):
     """users api implementation"""
     def get(self, user_id=None):
         if user_id:
             user = User.query.get(user_id)
             if not user:
                 return {'error': 'User Not Found.'}, 404
-            return {'user': user}, 200
+            return {'user': user.to_dict()}, 200
         else:
             users = User.query.all()
             return {'users': [user.to_dict() for user in users]}, 200
