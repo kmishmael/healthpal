@@ -29,6 +29,7 @@ class IsVerified(enum.Enum):
     false = 'FALSE'
 
 
+
 class User(UserMixin, db.Model):
     """user model"""
     id = db.Column(db.Integer(), primary_key=True)
