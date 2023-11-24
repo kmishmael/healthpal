@@ -3,7 +3,7 @@
 from flask import request
 from flask_restful import Resource
 from app.models.user import User
-from app import db
+from ..db import db
 
 class UsersResource(Resource):
     """users api implementation"""
@@ -12,7 +12,7 @@ class UsersResource(Resource):
             user = User.query.get(user_id)
             if not user:
                 return {'error': 'User Not Found.'}, 404
-            return {'user': user}, 200
+            return {'user': user.to_dict()}, 200
         else:
             users = User.query.all()
             return {'users': [user.to_dict() for user in users]}, 200

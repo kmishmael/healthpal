@@ -3,7 +3,9 @@
 
 from flask_login import UserMixin
 import jwt
-from app import login, app, db
+from ..login import login
+from ..instance import app
+from ..db import db
 import enum
 from werkzeug.security import generate_password_hash, check_password_hash
 

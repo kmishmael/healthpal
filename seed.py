@@ -1,5 +1,6 @@
 from faker import Faker
-from app import app, db
+from app.instance import app
+from app.db import db
 from app.models.user import User
 import random
 
