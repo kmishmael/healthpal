@@ -1,24 +1,16 @@
 #!/usr/bin/python3
 
-import crypt
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import logging
-from logging.handlers import SMTPHandler, RotatingFileHandler
-import os
-from flask_restful import Api
-
 from app.config import get_config
-from .api.users import UsersResource
 from flask_cors import CORS
-
-from .instance import app
+from flask_bcrypt import Bcrypt
 
 cors = CORS()
-db = SQLAlchemy()
+db = None
 migrate = Migrate()
-bcrypt = crypt()
+bcrypt = Bcrypt()
 
 
 def create_app(config_name):
@@ -30,7 +22,7 @@ def create_app(config_name):
     app.register_blueprint(api_blueprint)
 
     cors.init_app(app)
-    db.init_app(app)
+    db = SQLAlchemy(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     return app
