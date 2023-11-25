@@ -4,17 +4,17 @@ from pathlib import Path
 
 
 HERE = Path(__file__).parent
-SQLITE_DEV = "sqlite:///" + str(HERE / "healthpal_dev.db")
-SQLITE_TEST = "sqlite:///" + str(HERE / "healthpal_test.db")
-SQLITE_PROD = "sqlite:///" + str(HERE / "healthpal_prod.db")
+SQLITE_DEV = "sqlite:///" + str(HERE / "flask_api_tutorial_dev.db")
+SQLITE_TEST = "sqlite:///" + str(HERE / "flask_api_tutorial_test.db")
+SQLITE_PROD = "sqlite:///" + str(HERE / "flask_api_tutorial_prod.db")
 
 
 class Config:
     """Base configuration."""
 
-    SECRET_KEY = os.getenv("SECRET_KEY", "No key found")
+    SECRET_KEY = os.getenv("SECRET_KEY", "open sesame")
     BCRYPT_LOG_ROUNDS = 4
-    TOKEN_EXPIRE_HOURS = 24
+    TOKEN_EXPIRE_HOURS = 0
     TOKEN_EXPIRE_MINUTES = 0
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PRESERVE_CONTEXT_ON_EXCEPTION = False

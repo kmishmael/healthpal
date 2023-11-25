@@ -1,14 +1,20 @@
 #!/usr/bin/python3
 """the user model"""
 
+from flask import current_app
 from flask_login import UserMixin
 import jwt
-from ..login import login
-from ..instance import app
-from ..db import db
 import enum
 from werkzeug.security import generate_password_hash, check_password_hash
 import bson
+from sqlalchemy.ext.hybrid import hybrid_property
+from app.util.datetime_util import (
+    get_local_utcoffset,
+    make_tzaware,
+    localized_dt_string,
+)
+from app import db, bcrypt
+from datetime import datetime, timezone
 
 
 class UserRoles(enum.Enum):
@@ -39,6 +45,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     profile_photo = db.Column(db.String())
     email_verified = db.Column(db.Enum(IsVerified), default=IsVerified.false)
+    password_hash = db.Column(db.String(100), nullable=False)
     role = db.Column(db.Enum(UserRoles), default=UserRoles.user)
     age = db.Column(db.Integer())
     height = db.Column(db.Integer())
@@ -49,6 +56,23 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         """specify how to print the class"""
         return f'<User {self.email} name {self.name}>'
+
+    @hybrid_property
+    def registered_on_str(self):
+        registered_on_utc = make_tzaware(
+            self.registered_on, use_tz=timezone.utc, localize=False
+        )
+        return localized_dt_string(registered_on_utc, use_tz=get_local_utcoffset())
+
+    @property
+    def password(self):
+        raise AttributeError("password: write-only field")
+
+    @password.setter
+    def password(self, password):
+        log_rounds = current_app.config.get("BCRYPT_LOG_ROUNDS")
+        hash_bytes = bcrypt.generate_password_hash(password, log_rounds)
+        self.password_hash = hash_bytes.decode("utf-8")
 
     def set_password(self, password):
         """Password hashing"""
@@ -61,7 +85,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            id = jwt.decode(token, app.config['SECRET_KEY'],
+            id = jwt.decode(token, current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
         except:
             return
@@ -108,8 +132,10 @@ class User(UserMixin, db.Model):
             'target_calories': self.target_calories
         }
 
+    @classmethod
+    def find_by_email(self, email):
+        return self.query.filter_by(email=email).first()
 
-@login.user_loader
-def load_user(id):
-    """Flask login user load function"""
-    return User.query.get(int(id))
+    @classmethod
+    def find_by_id(self, public_id):
+        return self.query.filter_by(public_id=public_id).first()
