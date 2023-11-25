@@ -24,7 +24,8 @@ with app.app_context():
             'age': random.randint(18, 35),
             'height': 183,
             'weight': 193,
-            'target_calories': random.randint(2000, 2500)
+            'target_calories': random.randint(2000, 2500),
+            'password': '20031980'
         }
 
         new_user = User(**new_user)
