@@ -14,8 +14,8 @@ from app.util.datetime_util import (
     localized_dt_string,
 )
 from app import db, bcrypt
-from datetime import datetime, timezone
-
+from datetime import datetime, timedelta, timezone
+from app.util.result import Result
 
 class UserRoles(enum.Enum):
     """User roles enum definition"""
@@ -139,3 +139,39 @@ class User(UserMixin, db.Model):
     @classmethod
     def find_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id).first()
+
+    def encode_access_token(self):
+        now = datetime.now(timezone.utc)
+        token_age_h = current_app.config.get("TOKEN_EXPIRE_HOURS")
+        token_age_m = current_app.config.get("TOKEN_EXPIRE_MINUTES")
+        expire = now + timedelta(hours=token_age_h, minutes=token_age_m)
+        if current_app.config["TESTING"]:
+            expire = now + timedelta(seconds=5)
+        payload = dict(exp=expire, iat=now, sub=self.public_id, admin=self.admin)
+        key = current_app.config.get("SECRET_KEY")
+        return jwt.encode(payload, key, algorithm="HS256")
+
+    @staticmethod
+    def decode_access_token(access_token):
+        if isinstance(access_token, bytes):
+            access_token = access_token.decode("ascii")
+        if access_token.startswith("Bearer "):
+            split = access_token.split("Bearer")
+            access_token = split[1].strip()
+        try:
+            key = current_app.config.get("SECRET_KEY")
+            payload = jwt.decode(access_token, key, algorithms=["HS256"])
+        except jwt.ExpiredSignatureError:
+            error = "Access token expired. Please log in again."
+            return Result.Fail(error)
+        except jwt.InvalidTokenError:
+            error = "Invalid token. Please log in again."
+            return Result.Fail(error)
+
+        user_dict = dict(
+            public_id=payload["sub"],
+            admin=payload["admin"],
+            token=access_token,
+            expires_at=payload["exp"],
+        )
+        return Result.Ok(user_dict)
