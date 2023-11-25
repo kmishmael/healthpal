@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 HERE = Path(__file__).parent
-SQLITE_DEV = "sqlite:///" + str(HERE / "flask_api_tutorial_dev.db")
-SQLITE_TEST = "sqlite:///" + str(HERE / "flask_api_tutorial_test.db")
-SQLITE_PROD = "sqlite:///" + str(HERE / "flask_api_tutorial_prod.db")
+SQLITE_DEV = "sqlite:///" + str(HERE / "healthpal_dev.db")
+SQLITE_TEST = "sqlite:///" + str(HERE / "healthpal_test.db")
+SQLITE_PROD = "sqlite:///" + str(HERE / "healthpal_prod.db")
 
 
 class Config:
