@@ -17,7 +17,7 @@ def test_decode_access_token_success(user):
     result = User.decode_access_token(access_token)
     assert result.success
     user_dict = result.value
-    assert user.public_id == user_dict["public_id"]
+    assert user.id == user_dict["id"]
     assert user.admin == user_dict["admin"]
 
 

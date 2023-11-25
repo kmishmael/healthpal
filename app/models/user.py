@@ -137,8 +137,8 @@ class User(UserMixin, db.Model):
         return self.query.filter_by(email=email).first()
 
     @classmethod
-    def find_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id).first()
+    def find_by_id(self, id):
+        return self.query.filter_by(id=id).first()
 
     def encode_access_token(self):
         now = datetime.now(timezone.utc)
@@ -147,7 +147,7 @@ class User(UserMixin, db.Model):
         expire = now + timedelta(hours=token_age_h, minutes=token_age_m)
         if current_app.config["TESTING"]:
             expire = now + timedelta(seconds=5)
-        payload = dict(exp=expire, iat=now, sub=self.public_id, admin=self.admin)
+        payload = dict(exp=expire, iat=now, sub=self.id, role=self.role.value)
         key = current_app.config.get("SECRET_KEY")
         return jwt.encode(payload, key, algorithm="HS256")
 
@@ -169,7 +169,7 @@ class User(UserMixin, db.Model):
             return Result.Fail(error)
 
         user_dict = dict(
-            public_id=payload["sub"],
+            id=payload["sub"],
             admin=payload["admin"],
             token=access_token,
             expires_at=payload["exp"],
