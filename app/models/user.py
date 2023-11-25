@@ -8,6 +8,7 @@ from ..instance import app
 from ..db import db
 import enum
 from werkzeug.security import generate_password_hash, check_password_hash
+import bson
 
 
 class UserRoles(enum.Enum):
@@ -29,9 +30,10 @@ class IsVerified(enum.Enum):
     false = 'FALSE'
 
 
-
 class User(UserMixin, db.Model):
     """user model"""
+    __tablename__ = 'user'
+
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String())
     email = db.Column(db.String(120), index=True, unique=True)
@@ -64,6 +66,32 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
+
+    def get_by_id(self, user_id):
+        """Get a user by id"""
+        user = db.users.find_one(
+            {"_id": bson.ObjectId(user_id), "active": True})
+        if not user:
+            return
+        user["_id"] = str(user["_id"])
+        user.pop("password")
+        return user
+
+    def get_by_email(self, email):
+        """Get a user by email"""
+        user = db.users.find_one({"email": email, "active": True})
+        if not user:
+            return
+        user["_id"] = str(user["_id"])
+        return user
+
+    def login(self, email, password):
+        """Login a user"""
+        user = self.get_by_email(email)
+        if not user or not check_password_hash(user["password"], password):
+            return
+        user.pop("password")
+        return user
 
     def to_dict(self):
         return {
