@@ -5,7 +5,6 @@ from flask import current_app
 from flask_login import UserMixin
 import jwt
 import enum
-from werkzeug.security import generate_password_hash, check_password_hash
 import bson
 from sqlalchemy.ext.hybrid import hybrid_property
 from app.util.datetime_util import (
@@ -16,37 +15,38 @@ from app.util.datetime_util import (
 from app import db, bcrypt
 from datetime import datetime, timedelta, timezone
 from app.util.result import Result
+from app.models.token_blacklist import BlacklistedToken
 
 class UserRoles(enum.Enum):
     """User roles enum definition"""
-    user = 'USER'
-    admin = 'ADMIN'
+    USER = 'USER'
+    ADMIN = 'ADMIN'
 
 
 class GenderOptions(enum.Enum):
     """gender options enum definition"""
-    male = 'MALE'
-    female = 'FEMALE'
-    other = 'OTHER'
+    MALE = 'MALE'
+    FEMALE = 'FEMALE'
+    OTHER = 'OTHER'
 
 
 class IsVerified(enum.Enum):
     """is a user verified?"""
-    true = 'TRUE'
-    false = 'FALSE'
+    TRUE = 'TRUE'
+    FALSE = 'FALSE'
 
 
 class User(UserMixin, db.Model):
     """user model"""
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer, nullable=False , primary_key=True, autoincrement=True)
     name = db.Column(db.String())
-    email = db.Column(db.String(120), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     profile_photo = db.Column(db.String())
-    email_verified = db.Column(db.Enum(IsVerified), default=IsVerified.false)
+    email_verified = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.Enum(UserRoles), default=UserRoles.user)
+    role = db.Column(db.Enum(UserRoles), default='USER')
     age = db.Column(db.Integer())
     height = db.Column(db.Integer())
     weight = db.Column(db.Integer())
@@ -74,13 +74,9 @@ class User(UserMixin, db.Model):
         hash_bytes = bcrypt.generate_password_hash(password, log_rounds)
         self.password_hash = hash_bytes.decode("utf-8")
 
-    def set_password(self, password):
-        """Password hashing"""
-        self.password_hash = generate_password_hash(password)
-
     def check_password(self, password):
         """verify password"""
-        return check_password_hash(self.password_hash, password)
+        return bcrypt.check_password_hash(self.password_hash, password)
 
     @staticmethod
     def verify_reset_password_token(token):
@@ -109,22 +105,14 @@ class User(UserMixin, db.Model):
         user["_id"] = str(user["_id"])
         return user
 
-    def login(self, email, password):
-        """Login a user"""
-        user = self.get_by_email(email)
-        if not user or not check_password_hash(user["password"], password):
-            return
-        user.pop("password")
-        return user
-
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'email': self.email,
             'profile_photo': self.profile_photo,
-            'email_verified': self.email_verified.value,
-            'role': self.role.value,
+            'email_verified': self.email_verified,
+            'role': self.role,
             'age': self.age,
             'height': self.height,
             'weight': self.weight,
@@ -167,11 +155,13 @@ class User(UserMixin, db.Model):
         except jwt.InvalidTokenError:
             error = "Invalid token. Please log in again."
             return Result.Fail(error)
-
-        user_dict = dict(
+        if BlacklistedToken.check_blacklist(access_token):
+            error = "Token blacklisted. Please log in again."
+            return Result.Fail(error)
+        token_payload = dict(
             id=payload["sub"],
-            admin=payload["admin"],
+            role=payload["role"],
             token=access_token,
             expires_at=payload["exp"],
         )
-        return Result.Ok(user_dict)
+        return Result.Ok(token_payload)
