@@ -4,16 +4,18 @@ from http import HTTPStatus
 from flask_restx import Namespace, Resource
 from app import db
 
-from app.api.exercises.dto import exercise_allocation, exercise_model, exercises_model, exercise_reqparser
+from app.api.exercises.dto import exercise_allocation, exercise_model, exercise_allocation_reqparser, exercises_model, exercise_reqparser
 from app.models.exercise import Exercise
 
 
 exercise_ns = Namespace(name="exercise", validate=True)
 exercises_ns = Namespace(name="exercises", validate=True)
+exercise_create_ns = Namespace(name="exercises_create", validate=True)
 exercise_allocation_ns = Namespace(name="exercise-allocation", validate=True)
 
 exercise_ns.models[exercises_model.name] = exercises_model
 exercises_ns.models[exercise_model.name] = exercise_model
+exercise_create_ns.models[exercise_allocation.name] = exercise_allocation
 exercise_allocation_ns.models[exercise_allocation.name] = exercise_allocation
 
 
@@ -99,6 +101,88 @@ class Exercise(Resource):
         """Delete exercise by ID."""
         try:
             exercise = Exercise.query.get(exercise_id)
+
+            if exercise:
+                db.session.delete(exercise)
+                db.session.commit()
+                return dict(status="success", message="Exercise deleted successfully.")
+            else:
+                return dict(status="error", message="Exercise not found."), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@exercise_create_ns.route("/allocation", endpoint="exercise_create_allocation")
+class ExerciseCreateAllocation(Resource):
+    """Handles HTTP requests to URL: /api/v1/exercise/register."""
+
+    @exercise_create_ns.expect(exercise_allocation_reqparser)
+    @exercise_create_ns.doc(security="Bearer")
+    @exercise_create_ns.response(int(HTTPStatus.CREATED), "New user was successfully created.")
+    @exercise_create_ns.response(int(HTTPStatus.CONFLICT), "Email address is already registered.")
+    @exercise_create_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @exercise_create_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
+    def post(self):
+        """Register a new user and return an access token."""
+        try:
+            request_data = exercise_allocation_reqparser.parse_args()
+            new_exercise_allocation = ExerciseAllocation(**request_data)
+            db.session.add(new_exercise_allocation)
+            db.session.commit()
+            return dict(status="success",
+                        message="Exercise Allocation done successfully.")
+        except Exception as e:
+            return dict(status="success",
+                        message=str(e))
+
+@exercise_allocation_ns.route("/allocation/<int:user_id>", endpoint="exercise_allocation")
+class ExerciseAllocation(Resource):
+    """Handles HTTP requests to URL: /api/v1/exercise/register."""
+
+    @exercise_allocation_ns.response(int(HTTPStatus.OK), "Exercise retrieved successfully.")
+    @exercise_allocation_ns.response(int(HTTPStatus.NOT_FOUND), "Exercise not found.")
+    def get(self, exercise_id):
+        """Retrieve exercise by ID."""
+        try:
+            exercise = ExerciseAllocation.query.get(exercise_id)
+
+            if exercise:
+                return dict(status="success", message="Exercise retrieved successfully.", data=exercise.serialize())
+            else:
+                return dict(status="error", message="Exercise not found."), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+    @exercise_allocation_ns.response(int(HTTPStatus.OK), "Exercise updated successfully.")
+    @exercise_allocation_ns.response(int(HTTPStatus.NOT_FOUND), "Exercise not found.")
+    def put(self, exercise_id):
+        """Update exercise by ID."""
+
+        args = exercise_reqparser.parse_args()
+
+        try:
+            exercise = ExerciseAllocation.query.get(exercise_id)
+
+            if exercise:
+                for key, value in args.items():
+                    if value is not None:
+                        setattr(exercise, key, value)
+
+                db.session.commit()
+                return dict(status="success", message="Exercise updated successfully.")
+            else:
+                return dict(status="error", message="Exercise not found."), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+    @exercise_allocation_ns.response(int(HTTPStatus.OK), "Exercise deleted successfully.")
+    @exercise_allocation_ns.response(int(HTTPStatus.NOT_FOUND), "Exercise not found.")
+    def delete(self, exercise_id):
+        """Delete exercise by ID."""
+        try:
+            exercise = ExerciseAllocation.query.get(exercise_id)
 
             if exercise:
                 db.session.delete(exercise)
