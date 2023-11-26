@@ -3,8 +3,10 @@
 from app import db
 
 
-class Meals(db.Model):
+class Meal(db.Model):
     """meal model definition"""
+    __tablename__ = 'meal'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.Text())
-    meal_owner = db.Column(db.Text(), db.PrimaryKey('profile.id'))
+    meal_owner = db.Column(db.Text(), db.ForeignKey('user.id'))
+    owner = db.relationship('User', backref=db.backref('mealowners'))

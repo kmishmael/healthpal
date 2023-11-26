@@ -40,8 +40,8 @@ class User(UserMixin, db.Model):
     """user model"""
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, nullable=False , primary_key=True, autoincrement=True)
-    name = db.Column(db.String())
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100))
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     profile_photo = db.Column(db.String())
     email_verified = db.Column(db.Boolean, default=False)

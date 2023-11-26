@@ -10,3 +10,5 @@ class MealAllocation(db.Model):
     calories = db.Column(db.Integer())
     servings = db.Column(db.Integer())
     meal_id = db.Column(db.Integer(), db.ForeignKey('meal.id'))
+    foods = db.relationship('Food', backref=db.backref('foodallocation'))
+    meals = db.relationship('Meal', backref=db.backref('mealsallocation'))
