@@ -8,5 +8,5 @@ class Meal(db.Model):
     __tablename__ = 'meal'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.Text())
-    meal_owner = db.Column(db.Text(), db.ForeignKey('user.id'))
+    meal_owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
     owner = db.relationship('User', backref=db.backref('mealowners'))

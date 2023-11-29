@@ -1,6 +1,6 @@
 """food model"""
 
-from models import db
+from app import db
 
 
 class Food(db.Model):
