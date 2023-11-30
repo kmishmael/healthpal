@@ -1,4 +1,4 @@
-"""API endpoint definitions for /exercise namespace."""
+"""API endpoint definitions for /food namespace."""
 from http import HTTPStatus
 
 from flask_restx import Namespace, Resource
@@ -110,7 +110,6 @@ class FoodRUDResponse(Resource):
                 return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
-
 
 
 @meals_ns.route("/", endpoint="meals_create")
