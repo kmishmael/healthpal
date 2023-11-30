@@ -21,7 +21,7 @@ export default function Header() {
           {/* <MobileMenu menu={menu} /> */}
         </Suspense>
       </div>
-      <div className="flex w-full items-center">
+      <div className="flex w-full items-center justify-between mx-2">
         <div className="flex w-full md:w-2/3">
           <a
             href="/"
@@ -40,13 +40,13 @@ export default function Header() {
               <path d="M10.2887 22.1603L5.57735 14L10.2887 5.83974H19.7113L24.4227 14L19.7113 22.1603H10.2887Z" />
             </svg>
 
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
+            <div className="flex-none text-sm font-medium uppercase md:hidden lg:block">
               HEALTHPAL
             </div>
           </a>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menu.map((item: Menu, index: number) => (
+              {menu.map((item: Menu, _: number) => (
                 <li key={item.name}>
                   <a
                     href={item.path}
@@ -59,14 +59,10 @@ export default function Header() {
             </ul>
           ) : null}
         </div>
-        <div className="hidden justify-center md:flex md:w-1/3">
-          <Suspense>
-            {/* <Search /> */}
-          </Suspense>
-        </div>
-        <div className="flex justify-end md:w-[10%]">
-          <Suspense>
-          </Suspense>
+        <div className="flex gap-6">
+            <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">Sign in</button>
+            <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">Sign in</button>
+
         </div>
       </div>
     </nav>
