@@ -1,6 +1,8 @@
 """Exercise allocation"""
 
 from app import db
+from .exercise import Exercise
+from .exercises import Exercises
 
 class ExerciseAllocation(db.Model):
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)

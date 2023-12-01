@@ -11,10 +11,10 @@ from app.util.datetime_util import (
 )
 from app.models.token_blacklist import BlacklistedToken
 
-def process_registration_request(email, password):
+def process_registration_request(name, email, password):
     if User.find_by_email(email):
         abort(HTTPStatus.CONFLICT, f"{email} is already registered", status="fail")
-    new_user = User(email=email, password=password)
+    new_user = User(name=name, email=email, password=password)
     db.session.add(new_user)
     db.session.commit()
     access_token = new_user.encode_access_token()
@@ -41,7 +41,7 @@ def _create_auth_successful_response(token, status_code, message):
     response = jsonify(
         status="success",
         message=message,
-        access_token=token,
+        access_token=token.decode('utf-8'),
         token_type="bearer",
         expires_in=_get_token_expire_time(),
     )

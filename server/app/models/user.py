@@ -46,7 +46,7 @@ class User(UserMixin, db.Model):
     profile_photo = db.Column(db.String())
     email_verified = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.Enum(UserRoles), default='USER')
+    role = db.Column(db.Enum(UserRoles), default=UserRoles.USER.value)
     age = db.Column(db.Integer())
     height = db.Column(db.Integer())
     weight = db.Column(db.Integer())
