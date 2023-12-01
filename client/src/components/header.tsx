@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 
-
 type Menu = {
   name: string;
   path: string;
@@ -17,9 +16,7 @@ export default function Header() {
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
-        <Suspense>
-          {/* <MobileMenu menu={menu} /> */}
-        </Suspense>
+        <Suspense>{/* <MobileMenu menu={menu} /> */}</Suspense>
       </div>
       <div className="flex w-full items-center justify-between mx-2">
         <div className="flex w-full md:w-2/3">
@@ -60,9 +57,16 @@ export default function Header() {
           ) : null}
         </div>
         <div className="flex gap-6">
-            <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">Sign in</button>
-            <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">Sign in</button>
-
+          <a href="/login">
+            <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">
+              Sign in
+            </button>
+          </a>
+          <a href="/register">
+            <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
+              Sign in
+            </button>
+          </a>
         </div>
       </div>
     </nav>
