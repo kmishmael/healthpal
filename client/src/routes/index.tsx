@@ -5,7 +5,12 @@ import SignUp from "../components/signup";
 import Login from "../components/login";
 import Header from "../components/header";
 import Footer from "../components/footer";
-
+import SideBar from "../components/sidebar";
+import Steps from "../pages/steps";
+import Dashboard2 from "../pages/dashboard2";
+import MealsPage from "../pages/meals";
+import ExercisesPage from "../pages/exercises";
+import WaterPage from "../pages/water";
 
 function RootLayout() {
   return <Outlet />;
@@ -19,6 +24,17 @@ function HomeLayout() {
         <Outlet />
       </div>
       <Footer />
+    </>
+  );
+}
+
+function WithSideBarLayout() {
+  return (
+    <>
+      <SideBar />
+      <div className="ml-[250px]">
+      <Outlet />
+      </div>
     </>
   );
 }
@@ -60,16 +76,16 @@ export const Routes = () => {
   // ];
 
   // Define routes accessible only to non-authenticated users
-// const routesForNotAuthenticatedOnly = [
-//     {
-//       path: "/",
-//       element: <div>Home Page</div>,
-//     },
-//     {
-//       path: "/login",
-//       element: <Login />,
-//     },
-//   ];
+  // const routesForNotAuthenticatedOnly = [
+  //     {
+  //       path: "/",
+  //       element: <div>Home Page</div>,
+  //     },
+  //     {
+  //       path: "/login",
+  //       element: <Login />,
+  //     },
+  //   ];
 
   // Combine and conditionally include routes based on authentication status
   // const router = createBrowserRouter([
@@ -90,6 +106,15 @@ export const Routes = () => {
 
   const router = createBrowserRouter([
     {
+      element: <HomeLayout />,
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+      ],
+    },
+    {
       element: <RootLayout />,
       children: [
         {
@@ -101,23 +126,40 @@ export const Routes = () => {
           element: <SignUp />,
         },
         {
-          path: "/dashboard",
-          element: <Dashboard {...mockData} />,
-        },
-      ],
-    },
-    {
-      element: <HomeLayout />,
-      children: [
-        {
           path: "/",
-          element: <Home />,
+          element: <WithSideBarLayout />,
+          children: [
+            {
+              path: "/dashboard",
+              element: <Dashboard {...mockData} />,
+            },
+            {
+              path: "/dashboard2",
+              element: <Dashboard2 {...mockData} />,
+            },
+            {
+              path: "/steps",
+              element: <Steps totalSteps={12000} weeklySteps={[4000, 6000, 8000, 5000, 7000, 9000, 10000]} />,
+            },
+            {
+              path: "/meals",
+              element: <MealsPage />,
+            },
+            {
+              path: "/water",
+              element: <WaterPage />,
+            },
+            {
+              path: "/exercises",
+              element: <ExercisesPage />,
+            },
+          ]
         },
       ],
     },
   ]);
 
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 };
 
 /*

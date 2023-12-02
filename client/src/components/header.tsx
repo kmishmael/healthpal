@@ -6,13 +6,14 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "./avatar";
+import { Link } from "react-router-dom";
 
 type Menu = {
   name: string;
   path: string;
 };
 
-function getNameInitials(name: string){
+export function getNameInitials(name: string){
   const ls = name.split(' ')
   let initials = ''
   for(let i = 0; i < 2; i++){
@@ -42,8 +43,8 @@ export default function Header() {
       </div>
       <div className="flex w-full items-center justify-between mx-2">
         <div className="flex w-full md:w-2/3">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
           >
             <svg
@@ -62,17 +63,17 @@ export default function Header() {
             <div className="flex-none text-sm font-medium uppercase md:hidden lg:block">
               HEALTHPAL
             </div>
-          </a>
+          </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
               {menu.map((item: Menu, _: number) => (
                 <li key={item.name}>
-                  <a
-                    href={item.path}
+                  <Link
+                    to={item.path}
                     className="text-neutral-800 underline-offset-4 hover:text-black "
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -94,16 +95,16 @@ export default function Header() {
           </>
         ) : (
           <div className="flex gap-6">
-            <a href="/login">
+            <Link to="login">
               <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">
                 Sign in
               </button>
-            </a>
-            <a href="/register">
+            </Link>
+            <Link to="register">
               <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
                 Sign up
               </button>
-            </a>
+            </Link>
           </div>
         )}
       </div>
