@@ -78,6 +78,16 @@ export const Routes = () => {
   //   ...routesForAuthenticatedOnly,
   // ]);
 
+  const mockData = {
+    calories: 1500,
+    steps: 8000,
+    waterIntake: 2000,
+    sleepTime: 7,
+    exercises: 30,
+    foods: 3,
+    meals: 2,
+  };
+
   const router = createBrowserRouter([
     {
       element: <RootLayout />,
@@ -90,6 +100,10 @@ export const Routes = () => {
           path: "/register",
           element: <SignUp />,
         },
+        {
+          path: "/dashboard",
+          element: <Dashboard {...mockData} />,
+        },
       ],
     },
     {
@@ -98,10 +112,6 @@ export const Routes = () => {
         {
           path: "/",
           element: <Home />,
-        },
-        {
-          path: "/dashboard",
-          element: <Dashboard />,
         },
       ],
     },
