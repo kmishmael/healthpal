@@ -2,7 +2,6 @@
 
 from flask import Flask
 from dotenv import load_dotenv
-from app import app, db
 
 load_dotenv()
 
@@ -13,4 +12,5 @@ def index():
 
 if __name__ == "__main__":
     print("Creating database tables...")
-    app.run()
+    app.debug = True
+    #app.run()

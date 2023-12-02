@@ -39,4 +39,4 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
 
-    return app
+    #return app

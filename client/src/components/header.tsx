@@ -1,10 +1,31 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { useAuth } from "../provider/auth-provider";
+import PopOver from "./popover";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "./avatar";
 
 type Menu = {
   name: string;
   path: string;
 };
+
+function getNameInitials(name: string){
+  const ls = name.split(' ')
+  let initials = ''
+  for(let i = 0; i < 2; i++){
+    if (i < ls.length){
+      initials += ls[i][0]
+    }
+  }
+  return initials.toLocaleUpperCase()
+}
+
 export default function Header() {
+  const { token } = useAuth();
+
   const menu: Menu[] = [
     { name: "Food", path: "#" },
     { name: "Exercises", path: "#" },
@@ -13,6 +34,7 @@ export default function Header() {
     { name: "Goals", path: "#" },
     { name: "Contact", path: "#" },
   ];
+
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -56,18 +78,34 @@ export default function Header() {
             </ul>
           ) : null}
         </div>
-        <div className="flex gap-6">
-          <a href="/login">
-            <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">
-              Sign in
-            </button>
-          </a>
-          <a href="/register">
-            <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
-              Sign in
-            </button>
-          </a>
-        </div>
+
+        {token && token.user ? (
+          <>
+            <PopOver
+              className={`inline-flex mx-auto items-center outline-transparent`}
+            >
+              <div className="border-4 rounded-full border-transparent hover:border-gray-200 transition-[border] duration-200 ease-in">
+                <Avatar>
+                  <AvatarImage src={``} />
+                  <AvatarFallback>{getNameInitials(token.user.name)}</AvatarFallback>
+                </Avatar>
+              </div>
+            </PopOver>
+          </>
+        ) : (
+          <div className="flex gap-6">
+            <a href="/login">
+              <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">
+                Sign in
+              </button>
+            </a>
+            <a href="/register">
+              <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
+                Sign up
+              </button>
+            </a>
+          </div>
+        )}
       </div>
     </nav>
   );

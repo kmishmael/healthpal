@@ -31,3 +31,7 @@ def add_user(email, admin, password):
     message = f"Successfully added new {user_type}:\n {new_user}"
     click.secho(message, fg="blue", bold=True)
     return 0
+
+if __name__ == "__main__":
+    print('i am here')
+    app.run(debug=True)

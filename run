@@ -1,0 +1,6 @@
+# run flask app
+cd server && flask run
+
+# run frontend app
+cd client && npm run dev
+

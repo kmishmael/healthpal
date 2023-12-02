@@ -13,17 +13,19 @@ from app.models.token_blacklist import BlacklistedToken
 
 def process_registration_request(name, email, password):
     if User.find_by_email(email):
-        abort(HTTPStatus.CONFLICT, f"{email} is already registered", status="fail")
+        abort(HTTPStatus.CONFLICT, f"Email already in use.", status="fail")
     new_user = User(name=name, email=email, password=password)
     db.session.add(new_user)
     db.session.commit()
     access_token = new_user.encode_access_token()
     return _create_auth_successful_response(
-        token=access_token,
+        accessToken=access_token,
+        name=new_user.name,
+        email=new_user.email,
+        id=new_user.id,
         status_code=HTTPStatus.CREATED,
         message="successfully registered",
     )
-
 
 def process_login_request(email, password):
     user = User.find_by_email(email)
@@ -31,17 +33,20 @@ def process_login_request(email, password):
         abort(HTTPStatus.UNAUTHORIZED, "email or password does not match", status="fail")
     access_token = user.encode_access_token()
     return _create_auth_successful_response(
-        token=access_token,
+        accessToken=access_token,
+        name=user.name,
+        email=user.email,
+        id=user.id,
         status_code=HTTPStatus.OK,
         message="successfully logged in",
     )
 
-
-def _create_auth_successful_response(token, status_code, message):
+def _create_auth_successful_response(accessToken, name, email, id, status_code, message):
     response = jsonify(
         status="success",
         message=message,
-        access_token=token.decode('utf-8'),
+        accessToken=accessToken.decode('utf-8'),
+        user={'id': id, 'name': name, 'email': email},
         token_type="bearer",
         expires_in=_get_token_expire_time(),
     )

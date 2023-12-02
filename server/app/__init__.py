@@ -24,4 +24,5 @@ def create_app(config_name):
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
+    app.debug = True  # Enable debug mode
     return app
