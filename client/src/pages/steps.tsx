@@ -3,7 +3,7 @@ import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { cn } from "../lib/utils";
 import { FaPlus } from "react-icons/fa";
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition } from "@headlessui/react";
 
 interface StepsPageProps {
   totalSteps: number;
@@ -12,7 +12,7 @@ interface StepsPageProps {
 
 const Steps: React.FC<StepsPageProps> = ({ totalSteps, weeklySteps }) => {
   const [loggedSteps, setLoggedSteps] = useState<number>(0);
-  let [isOpen, setIsOpen] = useState(false)
+  let [isOpen, setIsOpen] = useState(false);
 
   const handleLogSteps = () => {
     // Handle the logic to log steps, e.g., send to the server, update state, etc.
@@ -57,10 +57,13 @@ const Steps: React.FC<StepsPageProps> = ({ totalSteps, weeklySteps }) => {
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">Steps Overview</h1>
 
-      <div className="flex flex-col gap-5 p-6 w-1/2 border border-red rounded shadow-md">
+      <div className="flex flex-col gap-5 p-6 w-full border border-red rounded shadow-md">
         <div className="flex justify-between items-center">
           <p className="text-6xl text-blue-600 font-bold">5155</p>
-          <button onClick={() => setIsOpen(true)} className="text-3xl outline-transparent bg-gray-200 rounded-full p-4 hover:bg-blue-200 hover:text-blue-600 duration-150 transition-colors ease-in flex items-center justify-center m-0">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="text-3xl outline-transparent bg-gray-200 rounded-full p-4 hover:bg-blue-200 hover:text-blue-600 duration-150 transition-colors ease-in flex items-center justify-center m-0"
+          >
             <FaPlus className="h-6 w-6" />
           </button>
         </div>
@@ -79,7 +82,7 @@ const Steps: React.FC<StepsPageProps> = ({ totalSteps, weeklySteps }) => {
         </div>
 
         <>
-      {/* <div className="flex items-center justify-center">
+          {/* <div className="flex items-center justify-center">
         <button
           type="button"
           onClick={() => setIsOpen(true)}
@@ -89,61 +92,64 @@ const Steps: React.FC<StepsPageProps> = ({ totalSteps, weeklySteps }) => {
         </button>
       </div> */}
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => setIsOpen(false)}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+          <Transition appear show={isOpen} as={Fragment}>
+            <Dialog
+              as="div"
+              className="relative z-10"
+              onClose={() => setIsOpen(false)}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
                 leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Logs Steps
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <input className="rounded font-bold" type="text" />
-                    
-                  </div>
-
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </Dialog.Panel>
+                <div className="fixed inset-0 bg-black/25" />
               </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
 
-        <div className="flex flex-row gap-6">
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg font-medium leading-6 text-gray-900"
+                      >
+                        Logs Steps
+                      </Dialog.Title>
+                      <div className="mt-2">
+                        <input className="rounded font-bold" type="text" />
+                      </div>
+
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
+        </>
+
+        <div className="flex w-full flex-row gap-6">
           {stepsdistribution.map((dist) => (
             <div className="flex flex-col items-center gap-2">
               <CircularProgress className="h-8 w-8" progress={dist.value} />
@@ -154,7 +160,7 @@ const Steps: React.FC<StepsPageProps> = ({ totalSteps, weeklySteps }) => {
           ))}
         </div>
       </div>
-      <div className="mb-8 mt-8 w-1/2">
+      <div className="mb-8 mt-8 w-full">
         <h2 className="text-lg font-semibold mb-2">
           Weekly Steps Distribution
         </h2>
