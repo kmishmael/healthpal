@@ -59,7 +59,6 @@ const AuthProvider = ({ children }: any) => {
     [token]
   );
 
-  // Provide the authentication context to the children components
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
