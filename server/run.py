@@ -33,5 +33,6 @@ def add_user(email, admin, password):
     return 0
 
 if __name__ == "__main__":
-    print('i am here')
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
