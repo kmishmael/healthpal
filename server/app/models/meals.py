@@ -4,7 +4,7 @@ from app import db
 import enum
 from datetime import date
 from datetime import timedelta
-
+import calendar
 
 class MealType(enum.Enum):
     """Meal type enum"""
@@ -32,7 +32,7 @@ class Meal(db.Model):
     date = db.Column(db.Date, nullable=False, default=date.today())
     serving_type = db.Column(
         db.Enum(ServingType), nullable=False,  default=ServingType.SERVING.value)
-    amount = db.Column(db.Float(), nullabe=False)
+    amount = db.Column(db.Float(), nullable=False)
     food = db.relationship('Food', backref=db.backref('meals'))
     user = db.relationship('User', backref=db.backref('meals_owner'))
 
@@ -61,20 +61,21 @@ class Meal(db.Model):
         if specific_month is None:
             specific_month = date.today()
         start_date = date(specific_month.year, specific_month.month, 1)
-        end_date = date(specific_month.year,
-                        specific_month.month + 1, 1) - timedelta(days=1)
+        # print('specific => ', specific_month.year, specific_month.month, 1)
+        _, last_day = calendar.monthrange(specific_month.year, specific_month.month)
+        end_date = date.today() #(specific_month.year, specific_month.month, last_day)
 
         meals = cls.query.filter_by(user_id=user_id).filter(
             cls.date.between(start_date, end_date)).all()
-        return cls.group_menu_by_type(meals)
+        return cls.group_monthly_menu_by_type(meals, start_date, end_date)
 
     @classmethod
     def group_menu_by_type(cls, meals):
         """Group meals by meal type"""
-        menu_by_type = {meal_type: [] for meal_type in MealType}
+        daily_menu_by_type = {meal_type.value: [] for meal_type in MealType}
 
         for meal in meals:
-            menu_by_type[meal.type].append({
+            daily_menu_by_type[meal.type.value].append({
                 'id': meal.id,
                 'food_id': meal.food_id,
                 'amount': meal.amount,
@@ -82,4 +83,22 @@ class Meal(db.Model):
                 'food_name': meal.food.name,  # assuming there's a 'name' attribute in the Food model
             })
 
-        return menu_by_type
+        return daily_menu_by_type
+
+    @classmethod
+    def group_monthly_menu_by_type(cls, meals, start_date, end_date):
+        """Group meals by meal type"""
+        menu = {str(day): None for day in range(1, end_date.day + 1)}
+        daily_menu_by_type = {meal_type.value: [] for meal_type in MealType}
+
+        for meal in meals:
+            daily_menu_by_type[meal.type.value].append({
+                'id': meal.id,
+                'food_id': meal.food_id,
+                'amount': meal.amount,
+                'serving_type': meal.serving_type.value,
+                'food_name': meal.food.name,  # assuming there's a 'name' attribute in the Food model
+            })
+
+            menu[meal.date.day] = daily_menu_by_type
+        return menu

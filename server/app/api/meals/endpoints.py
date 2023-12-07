@@ -31,7 +31,6 @@ class MealsResponse(Resource):
         """Create a new Meal."""
         try:
             request_data = meal_parser.parse_args()
-
             new_meal = Meal(**request_data)
             db.session.add(new_meal)
             db.session.commit()
@@ -54,18 +53,22 @@ class MealsResponse(Resource):
             daily_meals = Meal.get_days_menu(user_id, specific_date)
             monthly_meals = Meal.get_months_menu(user_id)
 
+            specific_date = date.today() if specific_date is None else specific_date
             data = dict(
                 user_id=user_id,
+                start_date=date(specific_date.year,
+                                specific_date.month, 1).isoformat(),
+                end_date=date.today().isoformat(),
                 today=daily_meals,
                 this_month=monthly_meals
             )
-
             if data:
                 return dict(status="success", message="Meals retrieved successfully.", data=data)
             else:
                 return dict(status="error", message="Meals not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
-            print(e)
+            import traceback
+            traceback.print_exc()
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @meal_ns.response(int(HTTPStatus.OK), "Meals deleted successfully.")
@@ -92,7 +95,7 @@ class MealsResponse(Resource):
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@meal_item_ns.route("/<int:user_id>/<int:meal_id>", endpoint="meals_crud")
+@meal_item_ns.route("/<int:user_id>/<int:meal_id>", endpoint="meal_item_crud")
 class MealItemResponse(Resource):
     """Handles HTTP requests to: /api/v1/meals/<user_id>"""
 
