@@ -8,6 +8,7 @@ from app.api.exercises.endpoints import exercise_ns, exercises_ns, exercise_crea
 from app.api.food.endpoints import food_ns, food_create_ns
 from app.api.steps.endpoints import step_ns
 from app.api.water_intake.endpoints import water_intake_ns
+from app.api.meals.endpoints import meal_ns
 
 api_blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 authorizations = {"Bearer": {"type": "apiKey", "in": "header", "name": "Authorization"}}
@@ -30,3 +31,4 @@ api.add_namespace(food_create_ns, path="/food")
 api.add_namespace(food_ns, path="/food")
 api.add_namespace(step_ns, path="/steps")
 api.add_namespace(water_intake_ns, path="/water_intake")
+api.add_namespece(meal_ns, path='/meals')

@@ -26,7 +26,6 @@ class FoodCreateResource(Resource):
         """Create a new Food."""
         try:
             request_data = food_parser.parse_args()
-            print(request_data)
             new_food = Food(**request_data)
             db.session.add(new_food)
             db.session.commit()

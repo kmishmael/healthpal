@@ -26,6 +26,7 @@ meal_model = Model(
     },
 )
 
+
 meal_parser = RequestParser()
 meal_parser.add_argument("food_id", type=int, required=True, help="ID of the food associated with the meal")
 meal_parser.add_argument("user_id", type=int, required=True, help="ID of the user associated with the meal")
