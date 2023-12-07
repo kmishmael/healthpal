@@ -77,10 +77,16 @@ class StepsResponse(Resource):
         """Retrieve Steps by User ID."""
         # TODO: get rebust data for weekly, daily and make calculations and estimates for calories and other things
         try:
-            food = StepData.query.filter_by(user_id=user_id).first()
-            print('FOOD => ', food)
-            if food:
-                return dict(status="success", message="Food retrieved successfully.", data=dict(user_id=food.user_id, steps=food.steps))
+            step_data = StepData.query.filter_by(user_id=user_id).first()
+            data = dict(
+                user_id=user_id,
+                daily_steps=StepData.daily_steps(user_id),
+                weekly_steps=StepData.weekly_steps(user_id),
+                monthly_steps=StepData.monthly_steps(user_id),
+                weekly_distribution=StepData.weekly_distribution(user_id)
+            )
+            if step_data:
+                return dict(status="success", message="Food retrieved successfully.", data=dict(user_id=step_data.user_id, steps=step_data.steps))
             else:
                 return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
