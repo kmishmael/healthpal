@@ -2,6 +2,12 @@
 
 from app import db
 from datetime import date
+import enum
+
+class ExerciseType(enum.Enum):
+    CARDIO = 'CARDIO'
+    STRENGTH = 'STRENGTH'
+    FLEXIBILITY = 'FLEXIBILITY'
 
 """a group of exercises belonging to a user"""
 class Exercises(db.Model):
@@ -16,3 +22,4 @@ class Exercises(db.Model):
     time =  db.Column(db.Integer())
     exercise = db.relationship('Exercise', backref=db.backref('exercises'))
     user = db.relationship('User', backref=db.backref('exercises_owner'))
+    type = db.Column(db.Enum(ExerciseType), nullable=False)
