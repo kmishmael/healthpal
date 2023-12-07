@@ -7,12 +7,24 @@ from app import db
 
 from app.api.steps.dto import steps_reqparser, step_model
 from app.models.steps import StepData
+from app.models.user import User
 from datetime import date
 from sqlalchemy.orm.exc import NoResultFound
 
 step_ns = Namespace(name="steps", validate=True)
 
 step_ns.models[step_model.name] = step_model
+
+
+def resolve_weight(user):
+    if not user.weight:
+        if user.gender == 'MALE':
+            return 89.4
+        elif user.gender == 'FEMALE':
+            return 77.4
+        else:
+            return 83.4
+    return user.weight
 
 
 @step_ns.route("/<int:user_id>", endpoint="steps_crud")
@@ -31,14 +43,26 @@ class StepsResponse(Resource):
             request_data = steps_reqparser.parse_args()
             # new_step = StepData(**request_data)
             steps = request_data.get("steps")
+            # Estimating that 1 step = 0.67m, thus distance is in m
+            distance = steps * 0.67
+            # Assuming speed of 93m/min
+            duration = distance / 93.33333
+            user = User.query.get(user_id)
+            weight = resolve_weight(user)
+            # Formula: ((MET * Weight in kg) / 200) * duration
+            # where MET => Metabolic equivalent of task
+            calories_burned = ((2.5 * weight) / 200) * duration
             current_date = date.today()
             try:
                 entry = db.session.query(StepData).filter_by(
                     user_id=user_id, date=current_date).one()
                 entry.steps = entry.steps + steps
+                entry.distance = entry.distance + distance
+                entry.move_duration = entry.move_duration + duration
+                entry.calories_burned = entry.calories_burned + calories_burned
             except NoResultFound:
                 new_entry = StepData(
-                    user_id=user_id, date=current_date, steps=steps)
+                    user_id=user_id, date=current_date, steps=steps, distance=distance, move_duration=duration, calories_burned=calories_burned)
                 db.session.add(new_entry)
             db.session.commit()
             return dict(status="success",
