@@ -5,7 +5,7 @@ from flask_restx import Api
 
 from app.api.auth.endpoints import auth_ns
 from app.api.exercises.endpoints import exercise_ns, exercises_ns, exercise_create_ns, exercise_allocation_ns
-from app.api.food.endpoints import food_ns, meals_ns, meal_allocation_ns
+from app.api.food.endpoints import food_ns, food_create_ns
 from app.api.steps.endpoints import step_ns
 from app.api.water_intake.endpoints import water_intake_ns
 
@@ -26,8 +26,7 @@ api.add_namespace(exercises_ns, path="/exercises")
 api.add_namespace(exercise_ns, path="/exercise")
 api.add_namespace(exercise_create_ns, path="/exercises")
 api.add_namespace(exercise_allocation_ns, path="/exercises")
+api.add_namespace(food_create_ns, path="/food")
 api.add_namespace(food_ns, path="/food")
-api.add_namespace(meals_ns, path="/meals")
-api.add_namespace(meal_allocation_ns, path="/meals")
 api.add_namespace(step_ns, path="/steps")
 api.add_namespace(water_intake_ns, path="/water_intake")
