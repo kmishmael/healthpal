@@ -58,11 +58,11 @@ class StepsResponse(Resource):
                     user_id=user_id, date=current_date).one()
                 entry.steps = entry.steps + steps
                 entry.distance = entry.distance + distance
-                entry.move_duration = entry.move_duration + duration
+                entry.duration = entry.duration + duration
                 entry.calories_burned = entry.calories_burned + calories_burned
             except NoResultFound:
                 new_entry = StepData(
-                    user_id=user_id, date=current_date, steps=steps, distance=distance, move_duration=duration, calories_burned=calories_burned)
+                    user_id=user_id, date=current_date, steps=steps, distance=distance, duration=duration, calories_burned=calories_burned)
                 db.session.add(new_entry)
             db.session.commit()
             return dict(status="success",
@@ -75,21 +75,24 @@ class StepsResponse(Resource):
     @step_ns.response(int(HTTPStatus.NOT_FOUND), "Food not found.")
     def get(self, user_id):
         """Retrieve Steps by User ID."""
-        # TODO: get rebust data for weekly, daily and make calculations and estimates for calories and other things
         try:
-            step_data = StepData.query.filter_by(user_id=user_id).first()
+            daily_data = StepData.daily_steps(user_id)
+            weekly_data = StepData.weekly_steps(user_id)
+            monthly_data = StepData.monthly_steps(user_id)
+
             data = dict(
                 user_id=user_id,
-                daily_steps=StepData.daily_steps(user_id),
-                weekly_steps=StepData.weekly_steps(user_id),
-                monthly_steps=StepData.monthly_steps(user_id),
+                daily=dict(steps=daily_data[0], distance=daily_data[1], duration=daily_data[2], calories=daily_data[3]),
+                weekly=dict(steps=weekly_data[0], distance=weekly_data[1], duration=weekly_data[2], calories=weekly_data[3]),
+                monthly=dict(steps=monthly_data[0], distance=monthly_data[1], duration=monthly_data[2], calories=monthly_data[3]),
                 weekly_distribution=StepData.weekly_distribution(user_id)
             )
-            if step_data:
-                return dict(status="success", message="Food retrieved successfully.", data=dict(user_id=step_data.user_id, steps=step_data.steps))
+            if data:
+                return dict(status="success", message="Food retrieved successfully.", data=data)
             else:
                 return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
+            print(e)
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @step_ns.response(int(HTTPStatus.OK), "Food deleted successfully.")
