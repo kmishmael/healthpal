@@ -1,5 +1,5 @@
 from flask_restx import Model
-from flask_restx.fields import String, Integer
+from flask_restx.fields import String, Integer, datetime
 from flask_restx.reqparse import RequestParser
 from app import db
 from datetime import date
@@ -22,8 +22,6 @@ exercises_model = Model(
 exercises_parser = RequestParser()
 exercises_parser.add_argument("exercise_id", type=int, required=True, help="ID of the exercise")
 exercises_parser.add_argument("user_id", type=int, required=True, help="ID of the user")
-exercises_parser.add_argument("name", type=str, required=True, help="Name of the exercise")
-exercises_parser.add_argument("date", type=str, required=True, help="Date of the exercise")
 exercises_parser.add_argument("sets", type=int, default=1, help="Number of sets")
 exercises_parser.add_argument("reps", type=int, default=3, help="Number of repetitions")
 exercises_parser.add_argument("time", type=int, help="Time spent on the exercise")

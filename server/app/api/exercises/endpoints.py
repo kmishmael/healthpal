@@ -26,12 +26,15 @@ class ExercisesResponse(Resource):
         """Create a new Exercise."""
         try:
             request_data = exercises_parser.parse_args()
+            print(request_data)
             new_exercise = Exercises(**request_data)
             db.session.add(new_exercise)
             db.session.commit()
             return dict(status="success",
                         message=f"Exercises for user: {user_id} created. Got exercise id {new_exercise.id}")
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return dict(status="error",
                         message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 

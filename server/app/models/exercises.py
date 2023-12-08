@@ -15,7 +15,6 @@ class Exercises(db.Model):
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     exercise_id = db.Column(db.Integer(), db.ForeignKey('exercise.id'), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
-    name = db.Column(db.Text())
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     date = db.Column(db.Date, nullable=False, default=date.today())
     sets = db.Column(db.Integer(), default=1)

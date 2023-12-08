@@ -17,9 +17,9 @@ exercise_parser = RequestParser()
 exercise_parser.add_argument(
     "name", type=str, required=True)
 exercise_parser.add_argument(
-    "sets", type=str, required=True)
+    "sets", type=str, nullable=True, required=False)
 exercise_parser.add_argument(
-    "reps", type=str, required=True)
+    "reps", type=str, nullable=True, required=False)
 exercise_parser.add_argument(
     "calories", type=str, required=True)
 exercise_parser.add_argument(

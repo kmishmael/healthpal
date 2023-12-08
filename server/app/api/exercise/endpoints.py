@@ -7,20 +7,19 @@ from app.models.exercise import Exercise
 from sqlalchemy.orm.exc import NoResultFound
 
 exercise_ns = Namespace(name="exercise", validate=True)
-exercise_create_ns = Namespace(name="exercise_create", validate=True)
 
 exercise_ns.models[exercise_model.name] = exercise_model
 
-@exercise_create_ns.route("/", endpoint="exercise_c")
+@exercise_ns.route("/", endpoint="exercise_c")
 class ExerciseCreateResource(Resource):
     """Handles HTTP requests to: /api/v1/exercise"""
 
-    @exercise_create_ns.expect(exercise_parser)
-    @exercise_create_ns.doc(security="Bearer")
-    @exercise_create_ns.response(int(HTTPStatus.CREATED), "Exercise created successfully.")
-    @exercise_create_ns.response(int(HTTPStatus.CONFLICT), "Duplicate exercise id")
-    @exercise_create_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
-    @exercise_create_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
+    @exercise_ns.expect(exercise_parser)
+    @exercise_ns.doc(security="Bearer")
+    @exercise_ns.response(int(HTTPStatus.CREATED), "Exercise created successfully.")
+    @exercise_ns.response(int(HTTPStatus.CONFLICT), "Duplicate exercise id")
+    @exercise_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @exercise_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
     def post(self):
         """Create a new Exercise."""
         try:
