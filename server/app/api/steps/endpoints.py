@@ -4,6 +4,7 @@ from flask import jsonify
 
 from flask_restx import Namespace, Resource
 from app import db
+from sqlalchemy.exc import IntegrityError
 
 from app.api.steps.dto import steps_reqparser, step_model
 from app.models.steps import StepData
@@ -61,12 +62,20 @@ class StepsResponse(Resource):
                 entry.duration = entry.duration + duration
                 entry.calories_burned = entry.calories_burned + calories_burned
             except NoResultFound:
-                new_entry = StepData(
-                    user_id=user_id, date=current_date, steps=steps, distance=distance, duration=duration, calories_burned=calories_burned)
-                db.session.add(new_entry)
+                try:
+                    new_entry = StepData(user_id=user_id, date=current_date, steps=steps, distance=distance, duration=duration, calories_burned=calories_burned)
+                    db.session.add(new_entry)
+                except IntegrityError as e:
+                    db.session.rollback()
+                    error_info = e.orig.args[0]
+                    return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
             db.session.commit()
             return dict(status="success",
                         message=f"Steps for user: {user_id} updated. Got {steps} steps.")
+        except IntegrityError as e:
+            db.session.rollback()
+            error_info = e.orig.args[0]
+            return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
         except Exception as e:
             return dict(status="success",
                         message=str(e))

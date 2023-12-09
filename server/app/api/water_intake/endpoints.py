@@ -6,7 +6,7 @@ from .dto import water_intake_reqparser, water_intake_model
 from app.models.water_intake import WaterIntakes
 from datetime import date
 from app.models.user import User
-
+from sqlalchemy.exc import IntegrityError
 
 water_intake_ns = Namespace(name="water_intake", validate=True)
 water_intake_ns.models[water_intake_model.name] = water_intake_model
@@ -36,6 +36,10 @@ class WaterIntakeResponse(Resource):
             db.session.commit()
 
             return dict(status="success", message=f"Water intake for user: {user_id} updated. Got {amount} ml.")
+        except IntegrityError as e:
+            db.session.rollback()
+            error_info = e.orig.args[0]
+            return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
         except Exception as e:
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 

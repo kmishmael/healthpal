@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0fc1598ff218
+Revision ID: ae9eb6a31cfc
 Revises: 
-Create Date: 2023-12-09 01:12:34.285104
+Create Date: 2023-12-09 12:18:13.050969
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0fc1598ff218'
+revision = 'ae9eb6a31cfc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -52,15 +52,15 @@ def upgrade():
     sa.Column('reps', sa.Integer(), nullable=True),
     sa.Column('calories', sa.Integer(), nullable=False),
     sa.Column('time', sa.Integer(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='user_fk'),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('food',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.Text(), nullable=True),
     sa.Column('type', sa.Enum('PUBLIC', 'CUSTOM', name='foodtype'), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('calories', sa.Integer(), nullable=True),
     sa.Column('total_carbohydrates', sa.Float(), nullable=True),
     sa.Column('total_fat', sa.Float(), nullable=True),
@@ -76,7 +76,7 @@ def upgrade():
     sa.Column('vitamin_c', sa.Float(), nullable=True),
     sa.Column('calcium', sa.Float(), nullable=True),
     sa.Column('iron', sa.Float(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='user_fk'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('step_data',
@@ -87,15 +87,15 @@ def upgrade():
     sa.Column('distance', sa.Integer(), nullable=True),
     sa.Column('duration', sa.Integer(), nullable=True),
     sa.Column('calories_burned', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='user_fk'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('water_intakes',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('amount', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='user_fk'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('exercises',
@@ -107,8 +107,8 @@ def upgrade():
     sa.Column('reps', sa.Integer(), nullable=True),
     sa.Column('time', sa.Integer(), nullable=True),
     sa.Column('type', sa.Enum('CARDIO', 'STRENGTH', 'FLEXIBILITY', name='exercisetype'), nullable=False),
-    sa.ForeignKeyConstraint(['exercise_id'], ['exercise.id'], name='exercise_fk', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='user_fk', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['exercise_id'], ['exercise.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('meal',
@@ -119,8 +119,8 @@ def upgrade():
     sa.Column('date', sa.Date(), nullable=False),
     sa.Column('serving_type', sa.Enum('SERVING', 'CALORIES', name='servingtype'), nullable=False),
     sa.Column('amount', sa.Float(), nullable=False),
-    sa.ForeignKeyConstraint(['food_id'], ['food.id'], name='food_fk'),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='user_fk'),
+    sa.ForeignKeyConstraint(['food_id'], ['food.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

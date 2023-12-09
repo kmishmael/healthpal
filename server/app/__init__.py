@@ -25,7 +25,6 @@ def create_app(config_name):
     bcrypt.init_app(app)
     app.debug = True  # Enable debug mode
     def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
-        print('exe')
         dbapi_con.execute('pragma foreign_keys=ON')
 
     with app.app_context():

@@ -9,6 +9,7 @@ from app.models.meals import Meal
 from app.models.user import User
 from datetime import date
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 
 meal_ns = Namespace(name="meals", validate=True)
 meal_item_ns = Namespace(name="meal_item", validate=True)
@@ -36,6 +37,10 @@ class MealsResponse(Resource):
             db.session.commit()
             return dict(status="success",
                         message=f"Meals for user: {user_id} created. Got meal id {new_meal.id}")
+        except IntegrityError as e:
+            db.session.rollback()
+            error_info = e.orig.args[0]
+            return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
         except Exception as e:
             return dict(status="error",
                         message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR

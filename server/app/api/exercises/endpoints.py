@@ -7,6 +7,8 @@ from app.models.exercises import Exercises
 from app.models.user import User
 from datetime import date
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
+
 
 exercises_ns = Namespace(name="exercises", validate=True)
 
@@ -31,10 +33,12 @@ class ExercisesResponse(Resource):
             db.session.add(new_exercise)
             db.session.commit()
             return dict(status="success",
-                        message=f"Exercises for user: {user_id} created. Got exercise id {new_exercise.id}. Data: {new_exercise.to_dict()}")
+                        message=f"Exercises for user: {user_id} created. Got exercise id {new_exercise.id}. Data: {new_exercise.to_dict()}"), HTTPStatus.CREATED
+        except IntegrityError as e:
+            db.session.rollback()
+            error_info = e.orig.args[0]
+            return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
         except Exception as e:
-            import traceback
-            traceback.print_exc()
             return dict(status="error",
                         message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 

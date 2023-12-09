@@ -5,6 +5,7 @@ from app import db
 from app.api.exercise.dto import exercise_model, exercise_parser  # Make sure to import the appropriate DTOs
 from app.models.exercise import Exercise
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
 exercise_ns = Namespace(name="exercise", validate=True)
 
@@ -28,6 +29,11 @@ class ExerciseCreateResource(Resource):
             db.session.add(new_exercise)
             db.session.commit()
             return dict(status="success", message=f"Exercise with id {new_exercise.id} created.")
+        except IntegrityError as e:
+            db.session.rollback()
+            error_info = e.orig.args[0]
+            return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
+
         except Exception as e:
             import traceback
             traceback.print_exc()
