@@ -4,6 +4,8 @@ from app import db
 from datetime import date
 import enum
 import calendar
+from sqlalchemy import ForeignKey
+
 
 class ExerciseType(enum.Enum):
     CARDIO = 'CARDIO'
@@ -14,15 +16,27 @@ class ExerciseType(enum.Enum):
 class Exercises(db.Model):
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     exercise_id = db.Column(db.Integer(), db.ForeignKey('exercise.id'), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+        nullable=False)
     date = db.Column(db.Date, nullable=False, default=date.today())
     sets = db.Column(db.Integer(), default=1)
     reps = db.Column(db.Integer(), default=3)
     time =  db.Column(db.Integer())
-    exercise = db.relationship('Exercise', backref=db.backref('exercises'))
-    user = db.relationship('User', backref=db.backref('exercises_owner'))
     type = db.Column(db.Enum(ExerciseType), nullable=False)
+    #exercise = db.relationship('Exercise', backref=db.backref('exercises', passive_deletes=True))
+    
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'exercise_id': self.exercise_id,
+            'user_id': self.user_id,
+            'date': self.date.isoformat(),
+            'sets': self.sets,
+            'reps': self.reps,
+            'time': self.time,
+            'type': self.type.value
+        }
 
     @classmethod
     def get_days_exercises(cls, user_id, specific_date=None):

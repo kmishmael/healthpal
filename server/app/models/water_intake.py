@@ -9,11 +9,10 @@ from datetime import datetime, timedelta, date
 class WaterIntakes(db.Model):
     """Water goal model"""
     id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+        nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     amount = db.Column(db.Integer())
-    user = db.relationship(
-        'User', backref=db.backref('water_goals', lazy=True))
 
     @classmethod
     def get_daily_intake(self, user_id, date=None):

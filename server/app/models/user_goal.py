@@ -11,14 +11,13 @@ class GoalType(enum.Enum):
     maintain = 'MAINTAIN'
 
 
-class UserGoal(db.Model()):
+class UserGoal(db.Model):
     """user goal model"""
-    __tablename__ = 'usergoal'
     id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Text(), db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+        nullable=False)
     type = db.Column(db.Enum(GoalType))
     target_cal = db.Column(db.Integer())
     target_weight = db.Column(db.Integer())
     duration = db.Column(db.Integer())
-    users = db.relationship("User", backref=db.backref("usergoals"))
 

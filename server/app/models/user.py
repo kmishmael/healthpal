@@ -43,15 +43,22 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
-    profile_photo = db.Column(db.String())
+    profile_photo = db.Column(db.String)
     email_verified = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(100), nullable=False)
     role = db.Column(db.Enum(UserRoles), default=UserRoles.USER.value)
-    age = db.Column(db.Integer())
-    height = db.Column(db.Integer())
-    weight = db.Column(db.Integer())
+    age = db.Column(db.Integer)
+    height = db.Column(db.Integer)
+    weight = db.Column(db.Integer)
     gender = db.Column(db.Enum(GenderOptions))
-    target_calories = db.Column(db.Integer())
+    target_calories = db.Column(db.Integer)
+
+    water_intake = db.relationship('WaterIntakes', backref='user', lazy=True, cascade='all')
+    step_data = db.relationship('StepData', backref='user', lazy=True, cascade='all')
+    meals = db.relationship('Meal', backref='user', lazy=True, cascade='all')
+    exercises = db.relationship('Exercises', backref='user', lazy=True, cascade='all')
+    #goals = db.relationship('UserGoal', backref='user', lazy=True, cascade='all')
+
 
     def __repr__(self):
         """specify how to print the class"""

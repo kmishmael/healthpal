@@ -31,7 +31,7 @@ class ExercisesResponse(Resource):
             db.session.add(new_exercise)
             db.session.commit()
             return dict(status="success",
-                        message=f"Exercises for user: {user_id} created. Got exercise id {new_exercise.id}")
+                        message=f"Exercises for user: {user_id} created. Got exercise id {new_exercise.id}. Data: {new_exercise.to_dict()}")
         except Exception as e:
             import traceback
             traceback.print_exc()
@@ -123,6 +123,8 @@ class ExerciseItemResponse(Resource):
             else:
                 return dict(status="error", message="Exercise not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @exercises_ns.response(int(HTTPStatus.OK), "Exercise deleted successfully.")

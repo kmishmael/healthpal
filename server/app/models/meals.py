@@ -27,14 +27,13 @@ class Meal(db.Model):
     __tablename__ = 'meal'
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     food_id = db.Column(db.Integer(), db.ForeignKey('food.id'), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+        nullable=False)
     type = db.Column(db.Enum(MealType), nullable=False)
     date = db.Column(db.Date, nullable=False, default=date.today())
     serving_type = db.Column(
         db.Enum(ServingType), nullable=False,  default=ServingType.SERVING.value)
     amount = db.Column(db.Float(), nullable=False)
-    food = db.relationship('Food', backref=db.backref('meals'))
-    user = db.relationship('User', backref=db.backref('meals_owner'))
 
     def to_dict(self):
         return {
@@ -42,7 +41,7 @@ class Meal(db.Model):
             'food_id': self.food_id,
             'user_id': self.user_id,
             'type': self.type.value,
-            'date': str(self.date),
+            'date': self.date.isoformat(),
             'serving_type': self.serving_type.value,
             'amount': self.amount,
         }
