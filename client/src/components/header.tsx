@@ -42,7 +42,7 @@ export default function Header() {
         <Suspense>{/* <MobileMenu menu={menu} /> */}</Suspense>
       </div>
       <div className="flex w-full items-center justify-between mx-2">
-        <div className="flex w-full md:w-2/3">
+        <div className="flex w-full">
           <Link
             to="/"
             className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
@@ -80,8 +80,9 @@ export default function Header() {
           ) : null}
         </div>
 
+        <div className="">
         {token && token.user ? (
-          <>
+          <div className="flex gap-4 items-center">
             <PopOver
               className={`inline-flex mx-auto items-center outline-transparent`}
             >
@@ -92,21 +93,27 @@ export default function Header() {
                 </Avatar>
               </div>
             </PopOver>
-          </>
+            <Link to="dashboard">
+              <button className="outline-transparent h-10 rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
+                Dashboard
+              </button>
+            </Link>
+          </div>
         ) : (
-          <div className="flex gap-6">
+          <div className="flex items-center gap-6">
             <Link to="login">
-              <button className="outline-transparent rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">
+              <button className="outline-transparent h-10 border w-24 rounded-lg text-black hover:text-white px-3 duration-200 ease transition-color py-1.5 hover:bg-blue-600">
                 Sign in
               </button>
             </Link>
             <Link to="register">
-              <button className="outline-transparent rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
+              <button className="outline-transparent h-10 w-24 rounded-lg text-white hover:text-white px-3 duration-200 ease transition-color py-1.5 bg-blue-600 hover:bg-blue-800">
                 Sign up
               </button>
             </Link>
           </div>
         )}
+        </div>
       </div>
     </nav>
   );
