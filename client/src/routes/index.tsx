@@ -11,7 +11,7 @@ import MealsPage from "../pages/meals";
 import ExercisesPage from "../pages/exercises";
 import WaterPage from "../pages/water";
 import { ProtectedRoute } from "./protected-route";
-import Steps2 from "../pages/step2";
+import ProfilePage from "../pages/profile";
 
 function RootLayout() {
   return <Outlet />;
@@ -34,14 +34,13 @@ function WithSideBarLayout() {
     <>
       <SideBar />
       <div className="ml-[250px]">
-      <Outlet />
+        <Outlet />
       </div>
     </>
   );
 }
 
 export const Routes = () => {
-
   const mockData = {
     calories: 1500,
     steps: 8000,
@@ -77,6 +76,7 @@ export const Routes = () => {
           path: "/",
           element: <ProtectedRoute />,
           children: [
+            { path: "/profile", element: <ProfilePage /> },
             {
               path: "/",
               element: <WithSideBarLayout />,
@@ -87,11 +87,12 @@ export const Routes = () => {
                 },
                 {
                   path: "/steps",
-                  element: <Steps totalSteps={12000} weeklySteps={[4000, 6000, 8000, 5000, 7000, 9000, 10000]} />,
-                },
-                {
-                  path: '/steps2',
-                  element: <Steps2 />
+                  element: (
+                    <Steps
+                      totalSteps={12000}
+                      weeklySteps={[4000, 6000, 8000, 5000, 7000, 9000, 10000]}
+                    />
+                  ),
                 },
                 {
                   path: "/meals",
@@ -105,9 +106,9 @@ export const Routes = () => {
                   path: "/exercises",
                   element: <ExercisesPage />,
                 },
-              ]
+              ],
             },
-          ]
+          ],
         },
       ],
     },
@@ -115,4 +116,3 @@ export const Routes = () => {
 
   return <RouterProvider router={router} />;
 };
-

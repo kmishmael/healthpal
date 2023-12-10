@@ -112,7 +112,7 @@ const Steps: React.FC<StepsPageProps> = () => {
       percentage = 100;
     }
     if (percentage < 0) {
-      return `-${percentage.toFixed(0)}`;
+      return `${percentage.toFixed(0)}`;
     }
     return `+${percentage.toFixed(0)}`;
   }
