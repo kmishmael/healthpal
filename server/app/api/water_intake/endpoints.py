@@ -48,15 +48,22 @@ class WaterIntakeResponse(Resource):
     def get(self, user_id):
         """Retrieve water intake by User ID."""
         try:
-            daily_data = WaterIntakes.get_daily_intake(user_id)
+            day_dict = WaterIntakes.get_daily_intake(user_id)
+            daily_data = day_dict['current_day']
+            prev_data = day_dict['previous_day']
             total_weekly_intake, weekly_data = WaterIntakes.get_weekly_intake(
                 user_id)
             total_monthly_intake, monthly_data = WaterIntakes.get_monthly_intake(
                 user_id)
+            immediate, prev_week = WaterIntakes.get_last_weeks(user_id)
+            immediate_month, prev_month = WaterIntakes.get_last_months(user_id)
 
             data = dict(
                 user_id=user_id,
                 daily=daily_data,
+                prev_day=prev_data,
+                weeks=dict(immediate=immediate, prev_week=prev_week),
+                months=dict(immediate=immediate_month, prev_month=prev_month),
                 weekly=dict(total=total_weekly_intake,
                             distribution=weekly_data),
                 monthly=dict(total=total_monthly_intake,

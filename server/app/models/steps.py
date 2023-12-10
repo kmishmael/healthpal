@@ -12,7 +12,7 @@ class StepData(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
-        nullable=False)
+                        nullable=False)
     date = db.Column(db.Date, nullable=False, default=date.today())
     steps = db.Column(db.Integer(), nullable=False)
     distance = db.Column(db.Integer(), nullable=True)
@@ -37,6 +37,48 @@ class StepData(db.Model):
         return self.query.with_entities(func.sum(self.steps), func.sum(self.distance), func.sum(self.duration), func.sum(self.calories_burned)).filter(self.user_id == user_id, self.date >= start_of_month, self.date <= query_date).first()
 
     @classmethod
+    def last_week_distribution(cls, user_id):
+        end_date = date.today()
+        start_date = end_date - timedelta(days=6)  # 7 days ago, including today
+
+        current_date = start_date
+        days_distribution = {}
+
+        while current_date <= end_date:
+            day_initial = current_date.strftime('%a')  # Get the initial for the day of the week
+            days_distribution[day_initial] = {
+                'date': current_date.isoformat(),
+                'total_steps': 0,
+                'total_distance': 0,
+                'total_duration': 0,
+                'total_calories_burned': 0
+            }
+            current_date += timedelta(days=1)
+
+        results = cls.query.with_entities(
+            func.sum(cls.steps),
+            func.sum(cls.distance),
+            func.sum(cls.duration),
+            func.sum(cls.calories_burned),
+            cls.date
+        ).filter(
+            cls.user_id == user_id,
+            cls.date >= start_date,
+            cls.date <= end_date
+        ).group_by(cls.date).all()
+    
+        for result in results:
+            day_initial = result[4].strftime('%a')  # Get the initial for the day of the week
+            days_distribution[day_initial] = {
+                'date': result[4].isoformat(),
+                'total_steps': result[0] or 0,
+                'total_distance': result[1] or 0,
+                'total_duration': result[2] or 0,
+                'total_calories_burned': result[3] or 0
+            }
+        return days_distribution
+
+    @classmethod
     def weekly_distribution(cls, user_id):
         try:
             end_date = date.today()
@@ -52,7 +94,6 @@ class StepData(db.Model):
             distribution = {date_key: dict(steps=steps, distance=distance, duration=duration, calories_burned=calories_burned)
                             for date_key, steps, distance, duration, calories_burned in result}
 
-            print(distribution)
             # Ensure 4 weeks are represented, including the current week potentially being incomplete
             current_week_start = end_date - timedelta(days=end_date.weekday())
             for i in range(3, -1, -1):
@@ -68,7 +109,8 @@ class StepData(db.Model):
                 total_steps = sum([d['steps'] for d in data])
                 total_distance = sum([d['distance'] for d in data])
                 total_duration = sum([d['duration'] for d in data])
-                total_calories_burned = sum([d['calories_burned'] for d in data])
+                total_calories_burned = sum(
+                    [d['calories_burned'] for d in data])
 
                 if len(data) == 0:
                     new_distribution[i] = dict(steps=0, distance=0,
@@ -77,8 +119,29 @@ class StepData(db.Model):
                 else:
                     new_distribution[i] = dict(steps=total_steps, distance=total_distance,
                                                duration=total_duration, calories_burned=total_calories_burned)
+                total_steps = 0
+                total_distance = 0
+                total_duration = 0
+                total_calories = 0
 
-            return new_distribution
+                for entry in distribution.values():
+                    total_steps += entry.get('steps', 0)
+                    total_distance += entry.get('distance', 0)
+                    total_duration += entry.get('duration', 0)
+                    total_calories += entry.get('calories', 0)
+
+                total_entries = len(data)
+                average_steps = total_steps / total_entries if total_entries > 0 else 0
+                average_distance = total_distance / total_entries if total_entries > 0 else 0
+                average_duration = total_duration / total_entries if total_entries > 0 else 0
+                average_calories = total_calories / total_entries if total_entries > 0 else 0
+
+                average = dict(average_steps=average_steps, average_distance=average_distance,
+                               average_duration=average_duration, average_calories=average_calories)
+                total = dict(total_steps=total_steps, total_distance=total_distance,
+                             total_duration=total_duration, total_calories=total_calories)
+
+            return dict(distribution=new_distribution, average=average, total=total)
         except Exception as e:
             print(f"An exception occurred: {e}")
             import traceback

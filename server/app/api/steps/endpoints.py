@@ -89,11 +89,17 @@ class StepsResponse(Resource):
             weekly_data = StepData.weekly_steps(user_id)
             monthly_data = StepData.monthly_steps(user_id)
 
+            def parse_to_zero(data):
+                if data is None:
+                    return 0
+                return data
+
             data = dict(
                 user_id=user_id,
-                daily=dict(steps=daily_data[0], distance=daily_data[1], duration=daily_data[2], calories=daily_data[3]),
-                weekly=dict(steps=weekly_data[0], distance=weekly_data[1], duration=weekly_data[2], calories=weekly_data[3]),
-                monthly=dict(steps=monthly_data[0], distance=monthly_data[1], duration=monthly_data[2], calories=monthly_data[3]),
+                daily=dict(steps=parse_to_zero(daily_data[0]), distance=parse_to_zero(daily_data[1]), duration=parse_to_zero(daily_data[2]), calories=parse_to_zero(daily_data[3])),
+                last_week_distribution=StepData.last_week_distribution(user_id),
+                weekly=dict(steps=parse_to_zero(weekly_data[0]), distance=parse_to_zero(weekly_data[1]), duration=parse_to_zero(weekly_data[2]), calories=parse_to_zero(weekly_data[3])),
+                monthly=dict(steps=parse_to_zero(monthly_data[0]), distance=parse_to_zero(monthly_data[1]), duration=parse_to_zero(monthly_data[2]), calories=parse_to_zero(monthly_data[3])),
                 weekly_distribution=StepData.weekly_distribution(user_id)
             )
             if data:
@@ -101,6 +107,8 @@ class StepsResponse(Resource):
             else:
                 return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(e)
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
