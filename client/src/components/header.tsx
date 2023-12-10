@@ -9,8 +9,8 @@ type Menu = {
   path: string;
 };
 
-export function getNameInitials(name: string, email: string) {
-  if (name === null) {
+export function getNameInitials(name: string | undefined, email: string) {
+  if (!name) {
     return email[0].toLocaleUpperCase();
   }
   const ls = name.split(" ");

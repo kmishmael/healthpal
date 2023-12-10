@@ -1,8 +1,10 @@
 import { getNameInitials } from "./header";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Link } from "react-router-dom";
+import { useAuth } from "../provider/auth-provider";
 
 export default function SideBar() {
+  const { token } = useAuth()
   return (
     <>
       <div className="w-[250px] shadow-lg fixed h-screen top-0 left-0">
@@ -14,13 +16,13 @@ export default function SideBar() {
                   src={`https://avatars.githubusercontent.com/u/66499851`}
                 />
                 <AvatarFallback>
-                  {getNameInitials("KIBET ISMAEL")}
+                  {getNameInitials(token?.user.name, token?.user.email)}
                 </AvatarFallback>
               </Avatar>
             </div>
 
             <div className="py-2 font-bold text-neutral-600 text-lg uppercase">
-              <p>Kibet Ismael</p>
+              <p>{token?.user.name || token?.user.email}</p>
             </div>
 
             <div>
