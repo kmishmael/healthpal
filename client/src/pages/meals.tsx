@@ -25,7 +25,7 @@ const MealsPage: React.FC = () => {
   return (
     <div>
       {/* Other components */}
-      <Meals breakfast={breakfast} lunch={lunch} dinner={dinner} dailyGoal={dailyGoal} />
+      <Meals />
     </div>
   );
 };

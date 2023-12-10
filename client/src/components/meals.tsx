@@ -1,116 +1,216 @@
-// MealsPage.tsx
+import { Link } from "react-router-dom"
+import { Button } from "../components/ui/button"
+import { CardTitle, CardHeader, CardContent, Card } from "../components/ui/card"
+import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "../components/ui/table"
 
-import React, { useState } from 'react';
-
-interface FoodItem {
-  name: string;
-  calories: number;
-}
-
-interface MealsPageProps {
-  breakfast: FoodItem[];
-  lunch: FoodItem[];
-  dinner: FoodItem[];
-  dailyGoal: number;
-}
-
-const Meals: React.FC<MealsPageProps> = ({ breakfast, lunch, dinner, dailyGoal }) => {
-  const [foodName, setFoodName] = useState<string>('');
-  const [calories, setCalories] = useState<number>(0);
-  const [addedFoods, setAddedFoods] = useState<FoodItem[]>([]);
-
-  const addFood = () => {
-    if (foodName && calories > 0) {
-      const newFoodItem: FoodItem = { name: foodName, calories };
-      setAddedFoods([...addedFoods, newFoodItem]);
-      setFoodName('');
-      setCalories(0);
-    }
-  };
-
-  const calculateTotalCalories = (meal: FoodItem[]) => {
-    return meal.reduce((total, food) => total + food.calories, 0);
-  };
-
-  const calculateRemainingCalories = () => {
-    const totalCalories = calculateTotalCalories(addedFoods);
-    return dailyGoal - totalCalories;
-  };
-
+export default function Meals() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-4">Meals Page</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-md shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Add Food</h2>
-          <div className="flex items-center mb-2">
-            <label className="mr-2">Food Name:</label>
-            <input
-              type="text"
-              value={foodName}
-              onChange={(e) => setFoodName(e.target.value)}
-              className="border p-2 rounded-md"
+    <div className="flex flex-col w-full min-h-screen">
+      <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
+        <nav className="flex-col hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+          <Link className="flex items-center gap-2 text-lg font-semibold md:text-base" href="#">
+            <TableIcon className="w-6 h-6" />
+            <span className="sr-only">Meal Manager</span>
+          </Link>
+          <Link className="font-bold" to="#">
+            Meals
+          </Link>
+          <Link className="text-gray-500 dark:text-gray-400" to="#">
+            Custom Foods
+          </Link>
+          <Link className="text-gray-500 dark:text-gray-400" to="#">
+            Analytics
+          </Link>
+        </nav>
+        <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
+          <Button className="rounded-full" size="icon" variant="ghost">
+            <img
+              alt="Avatar"
+              className="rounded-full"
+              height="32"
+              src="/placeholder.svg"
+              style={{
+                aspectRatio: "32/32",
+                objectFit: "cover",
+              }}
+              width="32"
             />
-          </div>
-          <div className="flex items-center mb-2">
-            <label className="mr-2">Calories:</label>
-            <input
-              type="number"
-              value={calories}
-              onChange={(e) => setCalories(parseInt(e.target.value, 10))}
-              className="border p-2 rounded-md"
-            />
-          </div>
-          <button onClick={addFood} className="bg-blue-500 text-white py-2 px-4 rounded-md">
-            Add Food
-          </button>
+            <span className="sr-only">Toggle user menu</span>
+          </Button>
         </div>
-        <div className="bg-white p-4 rounded-md shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Today's Menu</h2>
-          <div className="mb-4">
-            <h3 className="text-md font-semibold mb-2">Breakfast</h3>
-            <ul>
-              {breakfast.map((food, index) => (
-                <li key={index}>{food.name} - {food.calories} kcal</li>
-              ))}
-            </ul>
-            <p>Total Calories: {calculateTotalCalories(breakfast)} kcal</p>
-          </div>
-          <div className="mb-4">
-            <h3 className="text-md font-semibold mb-2">Lunch</h3>
-            <ul>
-              {lunch.map((food, index) => (
-                <li key={index}>{food.name} - {food.calories} kcal</li>
-              ))}
-            </ul>
-            <p>Total Calories: {calculateTotalCalories(lunch)} kcal</p>
-          </div>
-          <div>
-            <h3 className="text-md font-semibold mb-2">Dinner</h3>
-            <ul>
-              {dinner.map((food, index) => (
-                <li key={index}>{food.name} - {food.calories} kcal</li>
-              ))}
-            </ul>
-            <p>Total Calories: {calculateTotalCalories(dinner)} kcal</p>
-          </div>
+      </header>
+      <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Breakfast</CardTitle>
+              <EggIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Oatmeal</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">150 calories</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Lunch</CardTitle>
+              <SandwichIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Salad</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">300 calories</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Dinner</CardTitle>
+              <MenuIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Chicken Stir Fry</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">500 calories</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Snacks</CardTitle>
+              <SandwichIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Fruit and Nuts</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">200 calories</p>
+            </CardContent>
+          </Card>
         </div>
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Daily Calorie Goal</h2>
-        <p>
-          Total Calories Consumed: {calculateTotalCalories(addedFoods)} kcal
-        </p>
-        <p>
-          Remaining Calories: {calculateRemainingCalories()} kcal
-        </p>
-        <p>
-          Daily Goal: {dailyGoal} kcal
-        </p>
-      </div>
+        <div>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Custom Foods</CardTitle>
+              <Button className="text-xs" variant="solid">
+                Add Food
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[200px]">Food</TableHead>
+                    <TableHead className="w-[100px]">Calories</TableHead>
+                    <TableHead className="w-[100px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">Avocado</TableCell>
+                    <TableCell>160</TableCell>
+                    <TableCell>
+                      <Button className="text-xs" variant="solid">
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Brown Rice</TableCell>
+                    <TableCell>215</TableCell>
+                    <TableCell>
+                      <Button className="text-xs" variant="solid">
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
     </div>
-  );
-};
+  )
+}
 
-export default Meals;
-    
+function EggIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 22c6.23-.05 7.87-5.57 7.5-10-.36-4.34-3.95-9.96-7.5-10-3.55.04-7.14 5.66-7.5 10-.37 4.43 1.27 9.95 7.5 10z" />
+    </svg>
+  )
+}
+
+
+function MenuIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="18" y2="18" />
+    </svg>
+  )
+}
+
+
+function SandwichIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 11v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3" />
+      <path d="M12 19H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3.83" />
+      <path d="m3 11 7.77-6.04a2 2 0 0 1 2.46 0L21 11H3Z" />
+      <path d="M12.97 19.77 7 15h12.5l-3.75 4.5a2 2 0 0 1-2.78.27Z" />
+    </svg>
+  )
+}
+
+
+function TableIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 3v18" />
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M3 9h18" />
+      <path d="M3 15h18" />
+    </svg>
+  )
+}

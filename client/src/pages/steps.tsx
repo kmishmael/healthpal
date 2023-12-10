@@ -337,9 +337,8 @@ const Steps: React.FC<StepsPageProps> = () => {
                                   : (dist.value / 6000) * 100
                               }
                             />
-                            <p className="font-bold text-lg uppercase text-blue-600">
+                            <p className="font-semibold text-sm uppercase text-blue-600">
                               {dist.label}
-                              {dist.value}
                             </p>
                           </div>
                         ))}

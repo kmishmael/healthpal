@@ -1,112 +1,76 @@
-import React, { useState } from 'react';
-//import { useAuth } from '../context/AuthContext'; // You can replace this with your authentication context
+import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card } from "../components/ui/card"
+import { AvatarImage, AvatarFallback, Avatar } from "../components/avatar"
+import { Button } from "../components/ui/button"
+import { Label } from "../components/ui/label"
+import { Input } from "../components/ui/input"
+import { Textarea } from "../components/ui/textarea"
 
-const ProfilePage: React.FC = () => {
-  const user = {name: 'Kibet Ismael',email: 'kmishmael@gmail.com', profilePicture: '', weight: 90, height: 90, goals: 2000};
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: user.name,
-    profilePicture: user.profilePicture,
-    weight: user.weight,
-    height: user.height,
-    goals: user.goals,
-    newPassword: '',
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleEditClick = () => {
-    setEditing(true);
-  };
-
-  const handleSaveClick = async () => {
-    // Call API to update user profile
-   // await updateUserProfile(formData);
-    setEditing(false);
-  };
-
-  const handleDeleteAccount = async () => {
-    const confirmed = window.confirm('Are you sure you want to delete your account?');
-    if (confirmed) {
-      // Call API to delete user account
-      //await deleteUserAccount();
-      //logout(); // Log the user out after deleting the account
-    }
-  };
-
+export default function ProfilePage() {
   return (
-    <div className="max-w-xl mx-auto mt-8 p-4">
-      <h2 className="text-3xl font-semibold mb-4">My Profile</h2>
-
-      <div className="flex items-center mb-4">
-        <img
-          src={formData.profilePicture}
-          alt="Profile"
-          className="w-16 h-16 rounded-full mr-4"
-        />
-        <div>
-          <p className="text-xl font-semibold">{formData.name}</p>
-          <p className="text-gray-500">{user.email}</p>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-600">Name</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-          readOnly={!editing}
-          className="form-input"
-        />
-      </div>
-
-      {/* Add similar input fields for other profile information (weight, height, goals) */}
-
-      {editing && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-600">New Password</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-        </div>
-      )}
-
-      <div className="flex justify-end">
-        {!editing ? (
-          <button onClick={handleEditClick} className="btn-primary mr-2">
-            Edit
-          </button>
-        ) : (
-          <>
-            <button onClick={handleSaveClick} className="btn-primary mr-2">
-              Save
-            </button>
-            <button onClick={() => setEditing(false)} className="btn-secondary">
-              Cancel
-            </button>
-          </>
-        )}
-      </div>
-
-      <div className="mt-8">
-        <button onClick={handleDeleteAccount} className="btn-danger">
-          Delete Account
-        </button>
-      </div>
+    <div className="w-full space-y-10">
+      <Card className="w-full max-w-lg">
+        <CardHeader>
+          <CardTitle>Profile Information</CardTitle>
+          <CardDescription>Edit your personal information</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-24 w-24">
+              <AvatarImage alt="User profile" src="/placeholder.svg?height=100&width=100" />
+              <AvatarFallback>AB</AvatarFallback>
+            </Avatar>
+            <div className="grid gap-0.5 text-xs">
+              <Button variant="outline">Change Picture</Button>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" placeholder="Enter your name" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="weight">Weight</Label>
+            <Input id="weight" placeholder="Enter your weight" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="height">Height</Label>
+            <Input id="height" placeholder="Enter your height" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="goals">Goals</Label>
+            <Textarea className="min-h-[100px]" id="goals" placeholder="Enter your goals" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="ml-auto">Save</Button>
+        </CardFooter>
+      </Card>
+      <Card className="w-full max-w-lg">
+        <CardHeader>
+          <CardTitle>Security</CardTitle>
+          <CardDescription>Change your password or delete your account</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="password">New Password</Label>
+            <Input id="password" placeholder="Enter your new password" type="password" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Input id="confirm-password" placeholder="Confirm your new password" type="password" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="ml-auto">Change Password</Button>
+        </CardFooter>
+      </Card>
+      <Card className="w-full max-w-lg">
+        <CardContent>
+          <Button className="w-full text-red-500 border-red-500 hover:bg-red-500 hover:text-white" variant="outline">
+            Delete Account
+          </Button>
+        </CardContent>
+      </Card>
     </div>
-  );
-};
+  )
+}
 
-export default ProfilePage;
