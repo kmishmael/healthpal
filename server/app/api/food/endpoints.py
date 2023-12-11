@@ -3,9 +3,10 @@ from flask import jsonify
 from flask_restx import Namespace, Resource
 from app import db
 from app.api.food.dto import food_model, food_parser # Make sure to import the appropriate DTOs
-from app.models.food import Food, FoodType
-from sqlalchemy.orm.exc import NoResultFound
+from app.models.food import Food
 from sqlalchemy.exc import IntegrityError
+from flask import jsonify
+
 
 food_ns = Namespace(name="food", validate=True)
 food_create_ns = Namespace(name="food_create", validate=True)
@@ -46,18 +47,18 @@ class FoodCreateResource(Resource):
 class FoodResponse(Resource):
     """Handles HTTP requests to: /api/v1/food/<food_id>"""
 
-    @food_ns.response(int(HTTPStatus.OK), "Food retrieved successfully.")
-    @food_ns.response(int(HTTPStatus.NOT_FOUND), "Food not found.")
-    def get(self, food_id):
-        """Retrieve Food by ID."""
-        try:
-            food = Food.query.get(food_id)
-            if food:
-                return dict(status="success", message="Food retrieved successfully.", data=food.to_dict())
-            else:
-                return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
-        except Exception as e:
-            return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+    # @food_ns.response(int(HTTPStatus.OK), "Food retrieved successfully.")
+    # @food_ns.response(int(HTTPStatus.NOT_FOUND), "Food not found.")
+    # def get(self, food_id):
+    #     """Retrieve Food by ID."""
+    #     try:
+    #         food = Food.query.get(food_id)
+    #         if food:
+    #             return dict(status="success", message="Food retrieved successfully.", data=food.to_dict())
+    #         else:
+    #             return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
+    #     except Exception as e:
+    #         return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @food_ns.response(int(HTTPStatus.OK), "Food updated successfully.")
     @food_ns.response(int(HTTPStatus.NOT_FOUND), "Food not found.")
@@ -86,6 +87,27 @@ class FoodResponse(Resource):
                 db.session.delete(food)
                 db.session.commit()
                 return dict(status="success", message="Food deleted successfully.")
+            else:
+                return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
+@food_ns.route("/<int:user_id>", endpoint="food_get_by_id")
+class FoodResponse(Resource):
+    """Handles HTTP requests to: /api/v1/food/<food_id>"""
+
+    @food_ns.response(int(HTTPStatus.OK), "Food retrieved successfully.")
+    @food_ns.response(int(HTTPStatus.NOT_FOUND), "Food not found.")
+    def get(self, user_id):
+        """Retrieve Food by ID."""
+        try:
+            foods = Food.query.filter_by(user_id=user_id).all()
+            f = []
+            for food in foods:
+                f.append(food.to_dict())
+            print(f)
+            if food:
+                return dict(status="success", message="Food retrieved successfully.", data=f)
             else:
                 return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
         except Exception as e:

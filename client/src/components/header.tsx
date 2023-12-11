@@ -44,20 +44,9 @@ export default function Header() {
         <div className="flex w-full">
           <Link
             to="/"
-            className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
+            className="mr-2 flex gap-4 w-full items-center justify-center md:w-auto lg:mr-6"
           >
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 48 48"
-              className="w-8 h-8 stroke-black dark:stroke-white"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M10.2887 43.1603L5.57735 35L10.2887 26.8397H19.7113L24.4227 35L19.7113 43.1603H10.2887Z" />
-              <path d="M28.2887 33.1603L23.5774 25L28.2887 16.8397H37.7113L42.4227 25L37.7113 33.1603H28.2887Z" />
-              <path d="M10.2887 22.1603L5.57735 14L10.2887 5.83974H19.7113L24.4227 14L19.7113 22.1603H10.2887Z" />
-            </svg>
+            <HeartPulseIcon className="h-6 w-6 text-red-500" />
 
             <div className="flex-none text-sm font-medium uppercase md:hidden lg:block">
               HEALTHPAL
@@ -117,5 +106,25 @@ export default function Header() {
         </div>
       </div>
     </nav>
+  );
+}
+
+function HeartPulseIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+    </svg>
   );
 }

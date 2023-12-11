@@ -96,3 +96,8 @@
   border-radius: 14px;
   border: 3px solid var(--primary);
 }
+
+.select input {
+  outline: none;
+  border: none;
+}

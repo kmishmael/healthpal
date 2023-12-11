@@ -1,4 +1,7 @@
+import { Avatar } from "../components/avatar";
 import LandingPage from "../components/landing-page";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader } from "../components/ui/card";
 
 export default function Home(): JSX.Element {
   return (
@@ -37,11 +40,128 @@ export default function Home(): JSX.Element {
             </button>
           </div>
         </div>
-        <img className="object-fit absolute right-12 top-12 w-96" src="fruit-salad.png" alt="" />
-        <img className="object-fit absolute left-4 top-2 w-64" src="grape-vine.png" alt="" />
-
+        <img
+          className="object-fit absolute right-12 top-12 w-96"
+          src="fruit-salad.png"
+          alt=""
+        />
+        <img
+          className="object-fit absolute left-4 top-2 w-64"
+          src="grape-vine.png"
+          alt=""
+        />
       </div>
-      <LandingPage />
+      {/* <LandingPage /> */}
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <div className="container px-4 md:px-6">
+          <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
+            <img
+              alt="Fitness tracking"
+              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
+              height="310"
+              src="/placeholder.svg"
+              width="550"
+            />
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="space-y-2">
+                <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
+                  Health Tracking
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Make Your Health a Priority
+                </h2>
+                <p className="max-w-[600px] text-gray-500 md:text-xl lg:text-base xl:text-xl dark:text-gray-400">
+                  With HealthPal, you can easily keep track of your health and
+                  fitness goals. Monitor your progress over time and stay
+                  motivated with our intuitive, easy-to-use app.
+                </p>
+              </div>
+              <div className="flex gap-2 min-w-[400px] flex-row">
+                <Link
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-blue-600 px-8 text-sm font-medium text-white shadow transition-colors hover:bg-blue-500/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-700"
+                  to="#"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6 lg:gap-10">
+          <div className="space-y-3">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              Join Our Community
+            </h2>
+            <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl lg:text-base xl:text-xl dark:text-gray-400">
+              Become a part of our supportive and inspiring community. Share
+              your journey, learn from others, and stay motivated!
+            </p>
+          </div>
+          <div className="grid w-full grid-cols-2 lg:grid-cols-5 items-center justify-center gap-8 lg:gap-12">
+            <img
+              className="aspect-[1/1] overflow-hidden rounded-full object-cover object-center"
+              src="/placeholder.svg?height=70&width=70"
+            />
+            <img
+              className="aspect-[1/1] overflow-hidden rounded-full object-cover object-center"
+              src="/placeholder.svg?height=70&width=70"
+            />
+            <img
+              className="aspect-[1/1] overflow-hidden rounded-full object-cover object-center"
+              src="/placeholder.svg?height=70&width=70"
+            />
+            <img
+              className="aspect-[1/1] overflow-hidden rounded-full object-cover object-center"
+              src="/placeholder.svg?height=70&width=70"
+            />
+            <img
+              className="aspect-[1/1] overflow-hidden rounded-full object-cover object-center"
+              src="/placeholder.svg?height=70&width=70"
+            />
+          </div>
+        </div>
+      </section>
+      <section className="w-full py-20 bg-white">
+          <div className="container px-4 md:px-6 mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
+              <Card className="flex flex-col items-center text-center">
+                <CardHeader>
+                  <img className="w-20 h-20" src="/placeholder.svg?height=100&width=100" />
+                </CardHeader>
+                <CardContent>
+                  <h3 className="text-2xl font-bold text-gray-800">John Doe</h3>
+                  <p className="mt-2 text-gray-500">
+                    "HealthPal helped me improve my health and fitness. It's easy to use and has excellent features."
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="flex flex-col items-center text-center">
+                <CardHeader>
+                  <img className="w-20 h-20" src="/placeholder.svg?height=100&width=100" />
+                </CardHeader>
+                <CardContent>
+                  <h3 className="text-2xl font-bold text-gray-800">Jane Smith</h3>
+                  <p className="mt-2 text-gray-500">
+                    "The best health tracking app I've ever used. It's been a game changer for my fitness journey."
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="flex flex-col items-center text-center">
+                <CardHeader>
+                  <img className="w-20 h-20" src="/placeholder.svg?height=100&width=100" />
+                </CardHeader>
+                <CardContent>
+                  <h3 className="text-2xl font-bold text-gray-800">Alice Johnson</h3>
+                  <p className="mt-2 text-gray-500">
+                    "I love the meal tracking feature. It's made maintaining a healthy diet so much easier."
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
     </>
   );
 }

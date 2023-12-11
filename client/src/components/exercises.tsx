@@ -56,7 +56,7 @@ export default function Exercises() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Custom Exercises</CardTitle>
-              <Button className="text-xs" variant="solid">
+              <Button className="text-xs">
                 Add Exercise
               </Button>
             </CardHeader>
@@ -74,7 +74,7 @@ export default function Exercises() {
                     <TableCell className="font-medium">Jogging</TableCell>
                     <TableCell>300</TableCell>
                     <TableCell>
-                      <Button className="text-xs" variant="solid">
+                      <Button className="text-xs">
                         Delete
                       </Button>
                     </TableCell>
@@ -83,7 +83,7 @@ export default function Exercises() {
                     <TableCell className="font-medium">Yoga</TableCell>
                     <TableCell>150</TableCell>
                     <TableCell>
-                      <Button className="text-xs" variant="solid">
+                      <Button className="text-xs">
                         Delete
                       </Button>
                     </TableCell>

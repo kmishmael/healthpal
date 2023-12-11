@@ -12,3 +12,12 @@ Using Flask, SQLAlchemy and MYSQL Database for production. We also use an sqlite
 Using ReactJS with Typescript, using Vite bundler for fast builds especially in development.
 
 This readme will be updated in due course.
+
+Project Name
+Introduction
+Must include link to your deployed site, final project blog article, author(s) LinkedIn
+Installation
+Usage
+Contributing
+Related projects
+Licensing

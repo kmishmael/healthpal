@@ -17,6 +17,8 @@ exercise_parser = RequestParser()
 exercise_parser.add_argument(
     "name", type=str, required=True)
 exercise_parser.add_argument(
+    "user_id", type=str, required=True)
+exercise_parser.add_argument(
     "sets", type=str, nullable=True, required=False)
 exercise_parser.add_argument(
     "reps", type=str, nullable=True, required=False)

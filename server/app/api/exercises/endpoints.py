@@ -53,11 +53,13 @@ class ExercisesResponse(Resource):
                     specific_date, '%Y-%m-%d').date()
 
             exercises = Exercises.query.filter_by(
-                user_id=user_id, date=specific_date).all()
+                user_id=user_id).all()
+            
+            months_exercises = Exercises.get_months_exercises(user_id)
 
             if exercises:
                 data = [exercise.to_dict() for exercise in exercises]
-                return dict(status="success", message="Exercises retrieved successfully.", data=data)
+                return dict(status="success", message="Exercises retrieved successfully.", data=months_exercises)
             else:
                 return dict(status="error", message="Exercises not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
