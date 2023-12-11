@@ -6,7 +6,6 @@ import {
   CardContent,
   Card,
   CardDescription,
-  CardFooter,
 } from "../components/ui/card";
 import {
   TableHead,
@@ -88,11 +87,6 @@ export default function Meals() {
   const [customFoods, setCustomFoods] = useState<any>(null);
   const { token } = useAuth();
 
-  const options = [
-    { value: "apple", label: "Apple" },
-    { value: "pineapple", label: "Pineapple" },
-    { value: "watermelon", label: "Watermelon" },
-  ];
 
   const {
     data: mealsData,

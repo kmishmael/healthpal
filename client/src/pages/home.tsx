@@ -1,5 +1,3 @@
-import { Avatar } from "../components/avatar";
-import LandingPage from "../components/landing-page";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
 
