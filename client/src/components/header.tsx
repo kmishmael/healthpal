@@ -9,10 +9,11 @@ type Menu = {
   path: string;
 };
 
-export function getNameInitials(name: string | undefined, email: string) {
-  if (!name) {
+export function getNameInitials(name: string | undefined, email: string | undefined) {
+  if (!name && email) {
     return email[0].toLocaleUpperCase();
   }
+  name = "Ku"
   const ls = name.split(" ");
   let initials = "";
   for (let i = 0; i < 2; i++) {
