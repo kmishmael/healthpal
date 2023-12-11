@@ -32,6 +32,7 @@ class MealsResponse(Resource):
         """Create a new Meal."""
         try:
             request_data = meal_parser.parse_args()
+            print(request_data)
             new_meal = Meal(**request_data)
             db.session.add(new_meal)
             db.session.commit()
@@ -42,6 +43,8 @@ class MealsResponse(Resource):
             error_info = e.orig.args[0]
             return dict(status="error", message=f"IntegrityError: {error_info}"), HTTPStatus.INTERNAL_SERVER_ERROR
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return dict(status="error",
                         message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 

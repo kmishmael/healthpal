@@ -16,13 +16,15 @@ import {
   TableBody,
   Table,
 } from "../components/ui/table";
+import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Dialog, Transition } from "@headlessui/react";
 import { IoAdd } from "react-icons/io5";
-import { useState } from "react";
-import  SelectSearch from "react-select";
-
+import { useState, useEffect } from "react";
+import SelectSearch from "react-select";
+import { API_URL } from "../constats";
+import { LuRefreshCcw } from "react-icons/lu";
 
 import {
   Select,
@@ -31,315 +33,312 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../provider/auth-provider";
+
+const retrieveFoods = async (userId: any) => {
+  const response = await axios.get(API_URL + `food/${userId}`);
+  return response.data.data;
+};
+
+const retrieveMeals = async (userId: any) => {
+  const response = await axios.get(API_URL + `meals/${userId}`);
+  return response.data.data["this_month"];
+};
+
+const addFood = async (userId: any, data: any, refetch: any) => {
+  const response = await axios
+    .post(API_URL + `food/`, {
+      user_id: userId,
+      ...data,
+    })
+    .finally(() => {
+      refetch();
+    });
+  return response.data;
+};
+
+const addMeal = async (userId: any, data: any, refetch: any) => {
+  const response = await axios
+    .post(API_URL + `meals/${userId}`, {
+      user_id: userId,
+      ...data,
+    })
+    .finally(() => {
+      refetch();
+    });
+  return response.data;
+};
+
+
+const deleteFood = async (foodId: any, refetch: any) => {
+  const response = await axios
+    .delete(API_URL + `food/${foodId}`)
+    .finally(() => {
+      refetch();
+    });
+  return response.data;
+};
 
 export default function Meals() {
   const [foodFormOpen, setFoodFormOpen] = useState<boolean>(false);
   const [mealFormOpen, setMealFormOpen] = useState<boolean>(false);
+  const [currentMeal, setCurrentMeal] = useState<any>(null);
+  const [customFoods, setCustomFoods] = useState<any>(null);
+  const { token } = useAuth();
 
   const options = [
     { value: "apple", label: "Apple" },
     { value: "pineapple", label: "Pineapple" },
     { value: "watermelon", label: "Watermelon" },
-  ]
+  ];
 
-  const mealsData: any = {
-    status: "success",
-    message: "Meals retrieved successfully.",
-    data: {
-      user_id: 1,
-      start_date: "2023-12-01",
-      end_date: "2023-12-11",
-      today: {
-        BREAKFAST: [],
-        LUNCH: [],
-        DINNER: [],
-        MORNING_SNACK: [],
-        AFTERNOON_SNACK: [],
-        EVENING_SNACK: [],
-      },
-      this_month: {
-        "2023-12-11": {
-          distribution: {
-            BREAKFAST: {
-              data: [
-                {
-                  id: 1,
-                  food_id: 1,
-                  amount: 1,
-                  serving_type: "SERVING",
-                  calories: 100,
-                  date: "2023-12-10",
-                  food_name: "Coffee",
-                },
-                {
-                  id: 2,
-                  food_id: 2,
-                  amount: 1,
-                  serving_type: "SERVING",
-                  calories: 80,
-                  date: "2023-12-10",
-                  food_name: "Banana",
-                },
-              ],
-              total_calories: 180,
-            },
-            LUNCH: {
-              data: [
-                {
-                  id: 3,
-                  food_id: 2,
-                  amount: 1,
-                  serving_type: "SERVING",
-                  calories: 80,
-                  date: "2023-12-10",
-                  food_name: "Banana",
-                },
-              ],
-              total_calories: 80,
-            },
-            DINNER: {
-              data: [
-                {
-                  id: 4,
-                  food_id: 2,
-                  amount: 1,
-                  serving_type: "SERVING",
-                  calories: 80,
-                  date: "2023-12-10",
-                  food_name: "Banana",
-                },
-              ],
-              total_calories: 80,
-            },
-            MORNING_SNACK: {
-              data: [],
-              total_calories: 0,
-            },
-            AFTERNOON_SNACK: {
-              data: [],
-              total_calories: 0,
-            },
-            EVENING_SNACK: {
-              data: [],
-              total_calories: 0,
-            },
-          },
-          total_calories: 340,
-        },
-      },
-    },
-  };
+  const {
+    data: mealsData,
+    error,
+    isLoading,
+    isFetching,
+    isError,
+    isSuccess,
+    refetch,
+    isRefetching,
+  } = useQuery({
+    queryKey: ["mealsData"],
+    queryFn: () => retrieveMeals(token?.user.id),
+    refetchOnWindowFocus: false,
+  });
 
-  const customFoods = {
-    status: "success",
-    message: "Food retrieved successfully.",
-    data: [
-      {
-        id: 1,
-        name: "Coffee",
-        type: "CUSTOM",
-        user_id: 1,
-        calories: 100,
-        total_carbohydrates: null,
-        total_fat: null,
-        protein: null,
-        saturated_fat: null,
-        trans_fat: null,
-        cholesterol: null,
-        sodium: null,
-        potassium: null,
-        dietary_fibre: null,
-        sugars: null,
-        vitamin_a: null,
-        vitamin_c: null,
-        calcium: null,
-        iron: null,
-      },
-      {
-        id: 2,
-        name: "Banana",
-        type: "CUSTOM",
-        user_id: 1,
-        calories: 80,
-        total_carbohydrates: null,
-        total_fat: null,
-        protein: null,
-        saturated_fat: null,
-        trans_fat: null,
-        cholesterol: null,
-        sodium: null,
-        potassium: null,
-        dietary_fibre: null,
-        sugars: null,
-        vitamin_a: null,
-        vitamin_c: null,
-        calcium: null,
-        iron: null,
-      },
-    ],
-  };
+  const {
+    data: foodData,
+    error: foodError,
+    isLoading: foodIsLoading,
+    isFetching: foodIsFetching,
+    isError: foodIsError,
+    isSuccess: foodIsSuccess,
+    refetch: foodRefetch,
+  } = useQuery({
+    queryKey: ["foodData"],
+    queryFn: () => retrieveFoods(token?.user.id),
+    refetchOnWindowFocus: false,
+  });
 
   const now = new Date();
   const today = `${now.getFullYear()}-${
     (now.getMonth() + 1) % 13
   }-${now.getDate()}`;
 
-  console.log(mealsData["data"]["this_month"]);
+  useEffect(() => {
+    // empty use effect
+  }, []);
 
-  const currentMeal = mealsData["data"]["this_month"][today];
-  console.log(currentMeal);
+  useEffect(() => {
+    if (isLoading || isFetching || foodIsLoading || foodIsFetching) return;
+    if (isSuccess && foodIsSuccess) {
+      console.log(mealsData);
+      console.log(foodData);
+      setCurrentMeal(mealsData[today]);
+      setCustomFoods(foodData);
+    }
+  }, [isLoading, isFetching, foodIsLoading, foodIsFetching]);
+
+  if (isError || foodIsError) {
+    return <>An Error has occured: {error || foodError}</>;
+  }
+
+  function refetchWrapper() {
+    refetch();
+    foodRefetch();
+  }
 
   return (
-    <div className="flex flex-col w-full min-h-screen">
-      <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">
-                Total Calories
-              </CardTitle>
-              <EggIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {currentMeal.total_calories}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">kcal</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Time</CardTitle>
-              <SandwichIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {currentMeal.total_calories}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                minutes
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Add Meal</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full flex justify-center items-center text-center">
-                <button
-                  onClick={() => setMealFormOpen(true)}
-                  className="w-fit items-center rounded-full px-3 py-1.5 my-4 font-medium text-white bg-blue-500"
-                >
-                  <div className="flex gap-1 items-center">
-                    <IoAdd className="w-5 h-5 font-bold" /> Meal
-                  </div>
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">
-                Add Custom Food
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full flex justify-center items-center text-center">
-                <button
-                  onClick={() => setFoodFormOpen(true)}
-                  className="w-fit items-center rounded-full px-3 py-1.5 my-4 font-medium text-white bg-blue-500"
-                >
-                  <div className="flex gap-1 items-center">
-                    <IoAdd className="w-5 h-5 font-bold" /> Food
-                  </div>
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        <div>
-          <Card className="w-full">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">
-                Today's Meals
-              </CardTitle>
-              <Button className="text-xs">Add Food</Button>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
-              {Object.keys(currentMeal.distribution).map((key: any) => (
-                <>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm font-medium flex justify-between">
-                        <div>{key}</div>
-                        <div>
-                          {currentMeal.distribution[key].total_calories}{" "}
-                          <span className="text-gray-700">kcal</span>
-                        </div>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="max-h-80 overflow-auto">
-                      {currentMeal.distribution[key].data.map((c: any) => (
-                        <>
-                          <div className="p-2 first:border-t border-b">
-                            <div>
-                              <p className="font-semibold">{c.food_name}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm">{c.calories} kcal</p>
-                            </div>
-                          </div>
-                        </>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+    <div className="flex p-2 flex-col w-full min-h-screen">
+      <div className="h-8 flex justify-end">
+        <button
+          onClick={() => refetch()}
+          className="border rounded px-4 py-2 mr-4 hover:bg-blue-100 transition-colors ease-in duration-200 text-blue-600"
+        >
+          <LuRefreshCcw className="h-4 w-4" />
+        </button>
+      </div>
 
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">
-                Your Custom Foods
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[200px]">Food</TableHead>
-                    <TableHead className="w-[100px]">Calories</TableHead>
-                    <TableHead className="w-[100px]">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {customFoods.data.map((c: any) => (
-                    <TableRow>
-                      <TableCell className="font-medium">{c.name}</TableCell>
-                      <TableCell>{c.calories}</TableCell>
-                      <TableCell className="flex gap-3">
-                        <Button className="text-xs px-3 w-14 py-1.5 border rounded">
-                          Edit
-                        </Button>
-                        <Button className="text-xs px-3 w-14 py-1.5 border rounded">
-                          Delete
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+      {!isLoading &&
+      !isFetching &&
+      !isRefetching &&
+      currentMeal != null &&
+      !foodIsLoading &&
+      !foodIsFetching ? (
+        <>
+          <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                  <CardTitle className="text-sm font-medium">
+                    Total Calories
+                  </CardTitle>
+                  <EggIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {currentMeal.total_calories}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    kcal
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                  <CardTitle className="text-sm font-medium">Time</CardTitle>
+                  <SandwichIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {currentMeal.total_calories}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    minutes
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                  <CardTitle className="text-sm font-medium">
+                    Add Meal
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="w-full flex justify-center items-center text-center">
+                    <button
+                      onClick={() => setMealFormOpen(true)}
+                      className="w-fit items-center rounded-full px-3 py-1.5 my-4 font-medium text-white bg-blue-500"
+                    >
+                      <div className="flex gap-1 items-center">
+                        <IoAdd className="w-5 h-5 font-bold" /> Meal
+                      </div>
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                  <CardTitle className="text-sm font-medium">
+                    Add Custom Food
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="w-full flex justify-center items-center text-center">
+                    <button
+                      onClick={() => setFoodFormOpen(true)}
+                      className="w-fit items-center rounded-full px-3 py-1.5 my-4 font-medium text-white bg-blue-500"
+                    >
+                      <div className="flex gap-1 items-center">
+                        <IoAdd className="w-5 h-5 font-bold" /> Food
+                      </div>
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div>
+              <Card className="w-full">
+                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                  <CardTitle className="text-sm font-medium">
+                    Today's Meals
+                  </CardTitle>
+                  <Button className="text-xs">Add Food</Button>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-4">
+                  {Object.keys(currentMeal.distribution).map((key: any) => (
+                    <>
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-sm font-medium flex justify-between">
+                            <div>{key}</div>
+                            <div>
+                              {currentMeal.distribution[key].total_calories}{" "}
+                              <span className="text-gray-700">kcal</span>
+                            </div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="max-h-80 overflow-auto">
+                          {currentMeal.distribution[key].data.map((c: any) => (
+                            <>
+                              <div className="p-2 first:border-t border-b">
+                                <div>
+                                  <p className="font-semibold">{c.food_name}</p>
+                                </div>
+                                <div>
+                                  <p className="text-sm">{c.calories} kcal</p>
+                                </div>
+                              </div>
+                            </>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </>
                   ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
+                </CardContent>
+              </Card>
+            </div>
 
-        <AddCustomMeal isOpen={mealFormOpen} setIsOpen={setMealFormOpen} options={options} />
-        <AddCustomFood isOpen={foodFormOpen} setIsOpen={setFoodFormOpen} />
-      </main>
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">
+                    Your Custom Foods
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[200px]">Food</TableHead>
+                        <TableHead className="w-[100px]">Calories</TableHead>
+                        <TableHead className="w-[100px]">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {customFoods.map((c: any) => (
+                        <TableRow>
+                          <TableCell className="font-medium">
+                            {c.name}
+                          </TableCell>
+                          <TableCell>{c.calories}</TableCell>
+                          <TableCell className="flex gap-3">
+                            <Button className="text-xs px-3 w-14 py-1.5 border rounded">
+                              Edit
+                            </Button>
+                            <Button onClick={() => deleteFood(c.id, refetch)} className="text-xs px-3 w-14 py-1.5 border rounded">
+                              Delete
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
+
+            <AddCustomMeal
+              isOpen={mealFormOpen}
+              setIsOpen={setMealFormOpen}
+              options={customFoods.map((f: any) => {
+                return { value: f.id, label: f.name };
+              })}
+              refetch={refetchWrapper}
+            />
+            <AddCustomFood
+              refetch={refetchWrapper}
+              isOpen={foodFormOpen}
+              setIsOpen={setFoodFormOpen}
+            />
+          </main>
+        </>
+      ) : (
+        <div>LOADING</div>
+      )}
     </div>
   );
 }
@@ -348,11 +347,39 @@ function AddCustomMeal({
   isOpen,
   setIsOpen,
   options,
+  refetch,
 }: {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   options: any;
+  refetch: any;
 }) {
+  const [type, setType] = useState<string>("");
+  const [serving, setServing] = useState<string>("");
+  const [food, setFood] = useState<any>("");
+
+  const { register, handleSubmit } = useForm();
+  const { token } = useAuth();
+
+  function handleForm(data: any) {
+    try {
+      //setIsOpen(false);
+      let amount = parseInt(data.amount);
+      if (isNaN(amount)) {
+        amount = 1;
+      }
+      const d = {
+        type: type,
+        serving_type: serving,
+        food_id: food.value,
+        amount: amount,
+        user_id: token?.user.id,
+      };
+      console.log(d);
+      addMeal(token?.user.id, d, refetch);
+      setIsOpen(false);
+    } catch {}
+  }
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -397,40 +424,85 @@ function AddCustomMeal({
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <form>
+                      <form onSubmit={handleSubmit(handleForm)}>
                         <div className="grid w-full items-center gap-4">
                           <div className="flex flex-col gap-2 space-y-1.5">
                             <Label htmlFor="name">Select Food</Label>
-                            <SelectSearch className='select' options={options} />
+                            <SelectSearch
+                              onChange={(e: any) => setFood(e)}
+                              className="select"
+                              options={options}
+                            />
                           </div>
                           <div className="flex flex-col gap-2 space-y-1.5">
                             <Label htmlFor="name">Type of Meal</Label>
-                            <Select>
+                            <Select onValueChange={(e) => setType(e)}>
                               <SelectTrigger id="framework">
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
-                              <SelectContent className="bg-white" position="popper">
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="BREAKFAST">Breakfast</SelectItem>
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="LUNCH">
+                              <SelectContent
+                                className="bg-white"
+                                position="popper"
+                              >
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="BREAKFAST"
+                                >
+                                  Breakfast
+                                </SelectItem>
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="LUNCH"
+                                >
                                   Lunch
                                 </SelectItem>
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="DINNER">Dinner</SelectItem>
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="MORNING_SNACK">Morning snack</SelectItem>
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="AFTERNOON_SNACK">Afternoon snack</SelectItem>
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="EVENING_SNACK">Evening snack</SelectItem>
-
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="DINNER"
+                                >
+                                  Dinner
+                                </SelectItem>
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="MORNING_SNACK"
+                                >
+                                  Morning snack
+                                </SelectItem>
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="AFTERNOON_SNACK"
+                                >
+                                  Afternoon snack
+                                </SelectItem>
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="EVENING_SNACK"
+                                >
+                                  Evening snack
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
                           <div className="flex flex-col gap-2 space-y-1.5">
                             <Label htmlFor="name">Type of serving</Label>
-                            <Select>
+                            <Select onValueChange={(e) => setServing(e)}>
                               <SelectTrigger id="framework">
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
-                              <SelectContent className="bg-white" position="popper">
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="SERVING">Serving</SelectItem>
-                                <SelectItem className="hover:bg-blue-100 rounded hover:text-blue-600" value="CALORIES">
+                              <SelectContent
+                                className="bg-white"
+                                position="popper"
+                              >
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="SERVING"
+                                >
+                                  Serving
+                                </SelectItem>
+                                <SelectItem
+                                  className="hover:bg-blue-100 rounded hover:text-blue-600"
+                                  value="CALORIES"
+                                >
                                   Amount of calories
                                 </SelectItem>
                               </SelectContent>
@@ -438,29 +510,36 @@ function AddCustomMeal({
                           </div>
                           <div className="flex flex-col gap-2 space-y-1.5">
                             <Label htmlFor="name">Amount</Label>
-                            <Input id="name" placeholder="Amount based on serving type" />
+                            <Input
+                              id="amount"
+                              placeholder="Amount based on serving type"
+                              {...register("amount", {
+                                required: "Amount is required.",
+                              })}
+                            />
                           </div>
 
                           <div className="text-xs text-blue-600 underline">
                             <p>Advanced fields</p>
                           </div>
                         </div>
+                        <div className="flex mt-6 justify-between">
+                          <Button
+                            onClick={() => setIsOpen(false)}
+                            variant="outline"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="bg-blue-100 text-blue-600 hover:text-white hover:bg-blue-600 duration-150 ease-in transition-colors"
+                            variant="outline"
+                            type="submit"
+                          >
+                            Create
+                          </Button>
+                        </div>
                       </form>
                     </CardContent>
-                    <CardFooter className="flex justify-between">
-                      <Button
-                        onClick={() => setIsOpen(false)}
-                        variant="outline"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        className="bg-blue-100 text-blue-600 hover:text-white hover:bg-blue-600 duration-150 ease-in transition-colors"
-                        variant="outline"
-                      >
-                        Create
-                      </Button>
-                    </CardFooter>
                   </Card>
                 </Dialog.Panel>
               </Transition.Child>
@@ -475,10 +554,33 @@ function AddCustomMeal({
 function AddCustomFood({
   isOpen,
   setIsOpen,
+  refetch,
 }: {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  refetch: any;
 }) {
+  const { register, handleSubmit } = useForm();
+  const { token } = useAuth();
+
+  function handleForm(data: any) {
+    try {
+      //setIsOpen(false);
+      let calories = parseInt(data.calories);
+      if (isNaN(calories)) {
+        calories = 1;
+      }
+      const d = {
+        name: data.name,
+        calories: calories,
+        user_id: token?.user.id,
+      };
+      console.log(d);
+      addFood(token?.user.id, d, refetch);
+      setIsOpen(false);
+    } catch {}
+  }
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -523,38 +625,50 @@ function AddCustomFood({
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <form>
+                      <form onSubmit={handleSubmit(handleForm)}>
                         <div className="grid w-full items-center gap-4">
                           <div className="flex flex-col gap-2 space-y-1.5">
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" placeholder="Name of food" />
+                            <Input
+                              {...register("name", {
+                                required: "Name is required.",
+                              })}
+                              placeholder="Name of food"
+                            />
                           </div>
 
                           <div className="flex flex-col gap-2 space-y-1.5">
                             <Label htmlFor="name">Calories</Label>
-                            <Input id="name" placeholder="Number of calories" />
+                            <Input
+                              {...register("calories", {
+                                required: "Calories is required.",
+                              })}
+                              id="name"
+                              placeholder="Number of calories"
+                            />
                           </div>
 
                           <div className="text-xs text-blue-600 underline">
                             <p>Advanced fields</p>
                           </div>
                         </div>
+                        <div className="flex mt-6 justify-between">
+                          <Button
+                            onClick={() => setIsOpen(false)}
+                            variant="outline"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="bg-blue-100 text-blue-600 hover:text-white hover:bg-blue-600 duration-150 ease-in transition-colors"
+                            variant="outline"
+                            type="submit"
+                          >
+                            Create
+                          </Button>
+                        </div>
                       </form>
                     </CardContent>
-                    <CardFooter className="flex justify-between">
-                      <Button
-                        onClick={() => setIsOpen(false)}
-                        variant="outline"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        className="bg-blue-100 text-blue-600 hover:text-white hover:bg-blue-600 duration-150 ease-in transition-colors"
-                        variant="outline"
-                      >
-                        Create
-                      </Button>
-                    </CardFooter>
                   </Card>
                 </Dialog.Panel>
               </Transition.Child>
