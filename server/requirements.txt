@@ -102,7 +102,6 @@ pycparser==2.21
 Pygments==2.16.1
 PyGObject==3.36.0
 PyHamcrest==1.9.0
-PyICU==2.4.2
 PyJWT==1.7.1
 pylint==2.4.4
 pymacaroons==0.13.0
