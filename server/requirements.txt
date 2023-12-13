@@ -132,7 +132,6 @@ tornado==6.3.3
 traitlets==5.12.0
 Twisted==18.9.0
 typing_extensions==4.8.0
-ubuntu-advantage-tools==20.3
 ufw==0.36
 unattended-upgrades==0.1
 urllib3==1.25.8
