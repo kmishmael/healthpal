@@ -78,7 +78,6 @@ mccabe==0.6.1
 mistune==3.0.2
 mock==3.0.5
 more-itertools==4.2.0
-mysqlclient==2.2.0
 nest-asyncio==1.5.8
 netifaces==0.10.4
 numpy==1.24.4
