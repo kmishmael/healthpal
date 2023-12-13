@@ -105,10 +105,12 @@ class FoodResponse(Resource):
             f = []
             for food in foods:
                 f.append(food.to_dict())
-            print(f)
-            if food:
+            print(foods)
+            if f:
                 return dict(status="success", message="Food retrieved successfully.", data=f)
             else:
-                return dict(status="error", message="Food not found."), HTTPStatus.NOT_FOUND
+                return dict(status="error", message="Food not found.", data=f)
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
