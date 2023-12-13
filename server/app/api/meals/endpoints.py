@@ -127,6 +127,8 @@ class MealItemResponse(Resource):
             else:
                 return dict(status="error", message="Meal Item not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return dict(status="error",
                         message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 

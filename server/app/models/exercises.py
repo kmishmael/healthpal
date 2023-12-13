@@ -22,7 +22,7 @@ class Exercises(db.Model):
         'exercise.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                         nullable=False)
-    date = db.Column(db.Date, nullable=False, default=date.today())
+    date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     sets = db.Column(db.Integer(), default=1)
     reps = db.Column(db.Integer(), default=3)
     time = db.Column(db.Integer())

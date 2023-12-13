@@ -31,7 +31,7 @@ class Meal(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                         nullable=False)
     type = db.Column(db.Enum(MealType), nullable=False)
-    date = db.Column(db.Date, nullable=False, default=date.today())
+    date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     serving_type = db.Column(
         db.Enum(ServingType), nullable=False,  default=ServingType.SERVING.value)
     amount = db.Column(db.Float(), nullable=False)
@@ -109,8 +109,7 @@ class Meal(db.Model):
                 'date': meal.date.isoformat(),
                 'food_name': meal.food.name,  # assuming there's a 'name' attribute in the Food model
             })
-
-            menu[meal.date.isoformat()] = cls.calculate_total_day_calories(
+            menu[meal.date.strftime('%Y-%m-%d')] = cls.calculate_total_day_calories(
                 daily_menu_by_type)
         return menu
 
