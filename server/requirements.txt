@@ -29,7 +29,6 @@ decorator==5.1.1
 Deprecated==1.2.14
 distlib==0.3.7
 distro==1.4.0
-distro-info===0.23ubuntu1
 entrypoints==0.3
 executing==2.0.0
 fabric==3.2.2
