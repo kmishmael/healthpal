@@ -185,8 +185,6 @@ export default function Meals() {
   useEffect(() => {
     if (isLoading || isFetching || foodIsLoading || foodIsFetching) return;
     if (isSuccess && foodIsSuccess) {
-      console.log(mealsData);
-      console.log(foodData);
       setCurrentMeal(mealsData[today]);
       setCustomFoods([...foodData]);
     }
@@ -522,7 +520,6 @@ function AddCustomMeal({
         amount: amount,
         user_id: token?.user.id,
       };
-      console.log(d);
       addMeal(token?.user.id, d, refetch);
       setIsOpen(false);
     } catch {}
@@ -722,7 +719,6 @@ function AddCustomFood({
         calories: calories,
         user_id: token?.user.id,
       };
-      console.log(d);
       addFood(token?.user.id, d, refetch);
       setIsOpen(false);
     } catch {}
@@ -845,7 +841,6 @@ function EditCustomFood({
 }) {
   const { register, handleSubmit } = useForm();
 
-  console.log(inputData);
   function handleForm(data: any) {
     try {
       let calories = parseInt(data.calories);
@@ -858,7 +853,6 @@ function EditCustomFood({
         user_id: inputData?.user_id,
         food_id: inputData?.food_id,
       };
-      console.log(d);
       updateFood(data.user_id, d, refetch);
       setIsOpen(false);
     } catch {}
@@ -1014,7 +1008,6 @@ function EditCustomMeal({
         user_id: token?.user.id,
         meal_id: inputData?.meal_id,
       };
-      console.log(d);
       updateMeal(token?.user.id, d, refetch);
       setIsOpen(false);
     } catch {}
