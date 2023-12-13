@@ -111,9 +111,7 @@ pyparsing==3.1.1
 pyRFC3339==1.1
 pyrsistent==0.15.5
 pyserial==3.4
-python-apt==2.0.0+ubuntu0.20.4.3
 python-dateutil==2.8.2
-python-debian===0.1.36ubuntu1
 python-dotenv==1.0.0
 pytz==2019.3
 PyYAML==5.3.1
