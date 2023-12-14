@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: ae9eb6a31cfc
+Revision ID: cee7722889bf
 Revises: 
-Create Date: 2023-12-09 12:18:13.050969
+Create Date: 2023-12-14 12:12:56.750338
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ae9eb6a31cfc'
+revision = 'cee7722889bf'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -102,7 +102,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('exercise_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('sets', sa.Integer(), nullable=True),
     sa.Column('reps', sa.Integer(), nullable=True),
     sa.Column('time', sa.Integer(), nullable=True),
@@ -116,7 +116,7 @@ def upgrade():
     sa.Column('food_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('type', sa.Enum('BREAKFAST', 'LUNCH', 'DINNER', 'MORNING_SNACK', 'AFTERNOON_SNACK', 'EVENING_SNACK', name='mealtype'), nullable=False),
-    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('serving_type', sa.Enum('SERVING', 'CALORIES', name='servingtype'), nullable=False),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['food_id'], ['food.id'], ),

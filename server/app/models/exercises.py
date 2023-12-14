@@ -63,6 +63,7 @@ class Exercises(db.Model):
 
         exercises = cls.query.filter_by(user_id=user_id).filter(
             cls.date.between(start_date, end_date)).all()
+        print('exer', exercises)
         return cls.group_monthly_exercises_by_type(exercises, start_date, end_date)
 
     @classmethod

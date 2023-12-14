@@ -292,7 +292,7 @@ export default function Meals() {
               <Card className="w-full">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                   <CardTitle className="text-sm font-medium">
-                    Today's Meals
+                    Today's Exercises
                   </CardTitle>
                   <Button className="text-xs">Add Food</Button>
                 </CardHeader>
@@ -985,7 +985,8 @@ function EditCustomMeal({
   const [serving, setServing] = useState<string>(
     inputData?.serving_type as string
   );
-  const [food, setFood] = useState<any>({
+  console.log(inputData)
+  const [food, setFood] = useState<any>((inputData == null) ? null : {
     value: inputData?.food_id,
     label: options.filter((c: any) => c.value == inputData?.food_id)[0].label,
   });

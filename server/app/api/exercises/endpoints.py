@@ -54,15 +54,27 @@ class ExercisesResponse(Resource):
 
             exercises = Exercises.query.filter_by(
                 user_id=user_id).all()
-            
+            print(exercises)
+
+            day_exercises = Exercises.get_days_exercises(user_id=user_id)
+
+            months_exercises = Exercises.get_months_exercises(user_id=user_id)
+
             months_exercises = Exercises.get_months_exercises(user_id)
+
+            d = dict(
+                this_month=months_exercises,
+                daily=day_exercises
+            )
 
             if exercises:
                 data = [exercise.to_dict() for exercise in exercises]
-                return dict(status="success", message="Exercises retrieved successfully.", data=months_exercises)
+                return dict(status="success", message="Exercises retrieved successfully.", data=d)
             else:
                 return dict(status="error", message="Exercises not found."), HTTPStatus.NOT_FOUND
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return dict(status="error", message=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @exercises_ns.response(int(HTTPStatus.OK), "Exercises deleted successfully.")
