@@ -42,10 +42,11 @@ def process_login_request(email, password):
     )
 
 def _create_auth_successful_response(accessToken, name, email, id, status_code, message):
+    key = current_app.config.get("SECRET_KEY")
     response = jsonify(
         status="success",
         message=message,
-        accessToken=accessToken.decode('utf-8'),
+        accessToken=accessToken,
         user={'id': id, 'name': name, 'email': email},
         token_type="bearer",
         expires_in=_get_token_expire_time(),
