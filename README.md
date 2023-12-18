@@ -7,6 +7,7 @@ This project is being done by:
 ## Infrastructure
 ## Backend
 Using Flask, SQLAlchemy and MYSQL Database for production. We also use an sqlite instance for testing.
+Backend API is now hosted here: http://54.82.200.245/api/v1/
 
 ## Frontend
 Using ReactJS with Typescript, using Vite bundler for fast builds especially in development.
