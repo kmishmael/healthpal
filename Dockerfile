@@ -8,21 +8,21 @@ RUN apt-get update -y && \
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the content of the 'server' folder into the container at /app
-COPY server /app
+# Copy the content of the 'server' folder into the container at /app/server
+COPY server /app/server
 
 # Change to the 'server' directory
 WORKDIR /app/server
 
-RUN ls
-# Install any needed packages specified in requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
+# If a requirements.txt file exists, install dependencies
+# If not, you may need to handle dependencies in a different way
+RUN if [ -f requirements.txt ]; then pip3 install --no-cache-dir -r requirements.txt; fi
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
 # Define environment variable
-ENV FLASK_APP=app.py
+ENV FLASK_APP=wsgi.py
 
 # Run app.py when the container launches
 CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
