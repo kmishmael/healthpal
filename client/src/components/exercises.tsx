@@ -958,8 +958,7 @@ function EditCustomFood({
                             <div className="flex mt-6 justify-between">
                               <Button
                                 onClick={() => setIsOpen(false)}
-                                variant="outline"
-                              >
+                                variant="outline">
                                 Cancel
                               </Button>
                               <Button
