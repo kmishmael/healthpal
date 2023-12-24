@@ -23,7 +23,7 @@ def create_app(config_name):
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
-    app.debug = True  # Enable debug mode
+    #app.debug = True  # Enable debug mode
     def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
         dbapi_con.execute('pragma foreign_keys=ON')
 
