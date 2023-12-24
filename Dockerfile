@@ -14,6 +14,7 @@ COPY server /app
 # Change to the 'server' directory
 WORKDIR /app/server
 
+RUN ls
 # Install any needed packages specified in requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 
